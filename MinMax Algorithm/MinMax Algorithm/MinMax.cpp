@@ -33,7 +33,7 @@ public:
 			}
 		}
 		else {
-			std::cout << "Node initialized \n";
+			//std::cout << "Node initialized \n";
 			currentNode.value = rand() % 100 + 1;
 		}
 	}
@@ -52,20 +52,28 @@ public:
 	}
 };
 
-int MinMax(Node &currentNode, int depth, bool maximizingPLayer) {
+int MinMax(Node &currentNode, int depth, int alpha, int beta, bool maximizingPLayer) {
 	if (depth == 0)
 		return currentNode.value;
 	if (maximizingPLayer) {
 		currentNode.value = -HIGHNUMBER;
 		for (auto& node : currentNode.children) {
-			currentNode.value = std::max(currentNode.value, MinMax(node, depth - 1, false));
+			int eval = MinMax(node, depth - 1, alpha, beta, false);
+			currentNode.value = std::max(currentNode.value, eval);
+			alpha = std::max(alpha, eval);
+			if (beta <= alpha)
+				break;
 		}
 		return currentNode.value;
 	}
 	else {
 		currentNode.value = HIGHNUMBER;
 		for (auto& node : currentNode.children) {
-			currentNode.value = std::min(currentNode.value, MinMax(node, depth - 1, true));
+			int eval = MinMax(node, depth - 1, alpha, beta, true);
+			currentNode.value = std::min(currentNode.value, eval);
+			beta = std::min(beta, eval);
+			if (beta <= alpha)
+				break;
 		}
 		return currentNode.value;
 	}
@@ -75,13 +83,13 @@ int main() {
 	NodeTree nt;
 	Node mainNode;
 
-	int depth = 3;
-	int nodesPerNode = 32;
+	int depth = 5;
+	int nodesPerNode = 15;
 
 	nt.Init(mainNode, depth, nodesPerNode);
-	nt.Print(mainNode);
+	//nt.Print(mainNode);
 
-	std::cout << "Result of MinMax :" << MinMax(mainNode, depth, true) << "\n";
+	std::cout << "Result of MinMax :" << MinMax(mainNode, depth, -HIGHNUMBER, HIGHNUMBER, true) << "\n";
 
 	return 0;
 }
