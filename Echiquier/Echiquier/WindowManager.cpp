@@ -3,7 +3,6 @@
 WindowManager::WindowManager(const char* title, int xPos, int yPos, int width, int height, SDL_Color color) {
 	event.type = NULL;
 	isRunning = false;
-	textureManager = nullptr;
 	window = nullptr;
 	windowRenderer = NULL;
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
@@ -11,11 +10,9 @@ WindowManager::WindowManager(const char* title, int xPos, int yPos, int width, i
 		windowRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 		SDL_SetRenderDrawColor(windowRenderer, color.r, color.g, color.b, color.a);
 		isRunning = true;
-		textureManager = new TextureManager();
 	}
 }
 WindowManager::~WindowManager() {
-	delete(textureManager);
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(windowRenderer);
 }

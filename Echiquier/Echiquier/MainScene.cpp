@@ -1,39 +1,30 @@
 #include "MainScene.h"
 
-MainScene::MainScene(WindowManager* window) {
+MainScene::MainScene(std::shared_ptr<WindowManager> window) {
 	this->window = window;
-	textureManager = window->GetTextureManager();
 	frameStart = frameTime = 0;
-
-	soundManager = new SoundManager();
-
 	soundManager->InitMusic("assets/", music);
 
-	/*
-		Initialiser les différents éléments de la scène
-	*/
+	inputManager = new InputManager(window);
+	chessBoard = new Board(window);
 }
 
 MainScene::~MainScene() {
-	delete(soundManager);
 }
 
 void MainScene::Events() {
 	frameStart = SDL_GetTicks();
 	window->FrameEvents();
+	chessBoard->player->pieces->Event(inputManager);
 }
 
 void MainScene::Update() {
-	/*
-		Update des différents éléments de la scène
-	*/
+	chessBoard->player->pieces->Move(inputManager);
 }
 
 void MainScene::Draw() {
 	SDL_RenderClear(window->GetRenderer());
-	/*
-		Objets à rendre
-	*/
+	chessBoard->DrawPieces();
 	SDL_RenderPresent(window->GetRenderer());
 }
 

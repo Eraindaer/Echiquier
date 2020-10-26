@@ -11,9 +11,9 @@
 #include "MainScene.h"
 
 int main(int argc, char* argv[]) {
-	WindowManager* window = new WindowManager("Echiquier SDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 500, 500, { 255, 255, 255, 255 });
-	MainScene* scene = new MainScene(window);
-
+	std::shared_ptr<WindowManager> window(new WindowManager("Echiquier SDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 500, 500, { 255, 255, 255, 255 }));
+	std::shared_ptr<MainScene> scene(new MainScene(window));
+	
 	while (window->GetRunState()) {
 		scene->Events();
 		scene->Update();
@@ -22,8 +22,6 @@ int main(int argc, char* argv[]) {
 		scene->Delay();
 	}
 	scene->Clear();
-	delete(window);
-	delete(scene);
 
 	return 0;
 }
