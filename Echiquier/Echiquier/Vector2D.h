@@ -13,6 +13,8 @@ public:
 	Vector2D Addition(Vector2D v);
 	Vector2D ScalarMultiplication(int x);
 
+	bool IsZero();
+
 	friend Vector2D operator + (Vector2D v1, Vector2D v2);
 	friend Vector2D operator * (int x, Vector2D v);
 

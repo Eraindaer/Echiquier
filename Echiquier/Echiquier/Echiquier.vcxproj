@@ -145,7 +145,6 @@
   <ItemGroup>
     <ClCompile Include="Bishop.cpp" />
     <ClCompile Include="Board.cpp" />
-    <ClCompile Include="Computer.cpp" />
     <ClCompile Include="HuffmanCoder.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="King.cpp" />
@@ -156,7 +155,6 @@
     <ClCompile Include="Pawn.cpp" />
     <ClCompile Include="Pieces.cpp" />
     <ClCompile Include="PiecesManager.cpp" />
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="PossiblePlacements.cpp" />
     <ClCompile Include="Queen.cpp" />
     <ClCompile Include="Rook.cpp" />
@@ -168,7 +166,6 @@
   <ItemGroup>
     <ClInclude Include="Bishop.h" />
     <ClInclude Include="Board.h" />
-    <ClInclude Include="Computer.h" />
     <ClInclude Include="HuffmanCoder.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="King.h" />
@@ -178,7 +175,6 @@
     <ClInclude Include="Pawn.h" />
     <ClInclude Include="Pieces.h" />
     <ClInclude Include="PiecesManager.h" />
-    <ClInclude Include="Player.h" />
     <ClInclude Include="PossiblePlacements.h" />
     <ClInclude Include="Queen.h" />
     <ClInclude Include="Rook.h" />

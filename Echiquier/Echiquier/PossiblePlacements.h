@@ -8,8 +8,5 @@ public:
 
 public:
 	int coordonates[2];
-	SDL_Texture* tex;
-	std::shared_ptr<WindowManager> window;
-	SDL_Rect src;
 };
 

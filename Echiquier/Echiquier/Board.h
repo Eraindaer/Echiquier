@@ -1,6 +1,5 @@
 #pragma once
-#include "Player.h"
-#include "Computer.h"
+#include "PiecesManager.h"
 
 class Board
 {
@@ -8,7 +7,8 @@ public:
 	Board(std::shared_ptr<WindowManager> window);
 	~Board();
 
-	void LoadPieces();
+	void Event(InputManager* inputManager);
+	void Update(InputManager* inputManager);
 	void DrawPieces();
 
 private:
@@ -16,7 +16,7 @@ private:
 	std::shared_ptr<WindowManager> window;
 
 public:
-	Player* player;
-	Computer* cpu;
+	PiecesManager* player;
+	PiecesManager* cpu;
 };
 

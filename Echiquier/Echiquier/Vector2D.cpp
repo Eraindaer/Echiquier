@@ -36,6 +36,12 @@ Vector2D Vector2D::ScalarMultiplication(int x) {
 	return vec;
 }
 
+bool Vector2D::IsZero() {
+	if (this->x == this->y == 0)
+		return true;
+	return false;
+}
+
 Vector2D operator + (Vector2D v1, Vector2D v2) {
 	return v1.Addition(v2);
 }

@@ -15,11 +15,11 @@ MainScene::~MainScene() {
 void MainScene::Events() {
 	frameStart = SDL_GetTicks();
 	window->FrameEvents();
-	chessBoard->player->pieces->Event(inputManager);
+	chessBoard->Event(inputManager);
 }
 
 void MainScene::Update() {
-	chessBoard->player->pieces->Move(inputManager);
+	chessBoard->Update(inputManager);
 }
 
 void MainScene::Draw() {

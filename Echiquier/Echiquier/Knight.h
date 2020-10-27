@@ -8,6 +8,6 @@ public:
     Knight(std::shared_ptr<WindowManager> window, int coordonates[2]);
     ~Knight();
 
-    void Move(bool placeTaken[8][8]) override;
+    void Move(bool placeTaken[8][8], Pieces& piecesManager) override;
 };
 

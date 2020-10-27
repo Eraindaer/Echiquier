@@ -10,17 +10,19 @@
 class PiecesManager : public Pieces
 {
 public:
-	PiecesManager(std::shared_ptr<WindowManager> window);
+	PiecesManager(std::shared_ptr<WindowManager> window, int player);
 	~PiecesManager();
 
 	void Event(InputManager* mouse);
 	void Move(InputManager* mouse);
 	void Draw();
 
+	void SetEnemy(Pieces* enemy);
+
 private:
-	std::vector<std::shared_ptr<Pieces>> pieces;
 	SDL_Texture* tex;
-	bool placeTaken[8][8];
+	SDL_Texture* dotTex;
 	bool actionSelected;
+	std::vector<std::shared_ptr<Pieces>> rooks;
 };
 
