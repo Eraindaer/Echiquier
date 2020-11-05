@@ -14,8 +14,12 @@ public:
 	inline SDL_Window*					   GetWindow() { return window; }
 	inline SDL_Renderer*				   GetRenderer() { return windowRenderer; }
 	inline std::shared_ptr<TextureManager> GetTextureManager() { return textureManager; }
+	inline int                             GetWindowWidth() { return width; }
+	inline int                             GetWindowHeight() { return height; }
 
 private:
+	int                                    width;
+	int                                    height;
 	bool							       isRunning;
 	SDL_Event							   event;
 	SDL_Window*							   window;

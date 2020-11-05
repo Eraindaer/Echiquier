@@ -1,5 +1,5 @@
 #pragma once
-#include "PiecesManager.h"
+#include "Player.h"
 
 class Board
 {
@@ -16,7 +16,7 @@ private:
 	std::shared_ptr<WindowManager> window;
 
 public:
-	PiecesManager* player;
-	PiecesManager* cpu;
+	Player* player;
+	Player* cpu;
 };
 

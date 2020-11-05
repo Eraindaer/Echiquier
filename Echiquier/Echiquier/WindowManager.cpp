@@ -5,12 +5,14 @@ WindowManager::WindowManager(const char* title, int xPos, int yPos, int width, i
 	isRunning = false;
 	window = nullptr;
 	windowRenderer = NULL;
+	this->width = width, this->height = height;
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
 		window = SDL_CreateWindow(title, xPos, yPos, width, height, 0);
 		windowRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 		SDL_SetRenderDrawColor(windowRenderer, color.r, color.g, color.b, color.a);
 		isRunning = true;
 	}
+ 
 }
 WindowManager::~WindowManager() {
 	SDL_DestroyWindow(window);

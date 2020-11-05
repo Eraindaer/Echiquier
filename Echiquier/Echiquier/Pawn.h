@@ -8,10 +8,9 @@ public:
     Pawn(std::shared_ptr<WindowManager> window, int coordonates[2]);
     ~Pawn();
 
-    void Move(bool placeTaken[8][8], Pieces& piecesManager) override;
+    void Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAttackedByEnemy[8][8], std::vector<std::vector<std::shared_ptr<Pieces>>>& allyPieces, std::vector<std::vector<std::shared_ptr<Pieces>>>& enemyPieces) override;
 
 public:
-    int startingPoint[2];
     Vector2D dir;
     Vector2D attackDir1, attackDir2;
 };

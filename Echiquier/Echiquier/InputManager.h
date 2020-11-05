@@ -8,8 +8,8 @@ public:
 	~InputManager();
 
 	bool GetMouseClick();
-	inline int  GetMouseXPos() { return window->GetEvent().button.x / 62; }
-	inline int  GetMouseYPos() { return window->GetEvent().button.y / 62; }
+	int  GetMouseXPos(); 
+	int  GetMouseYPos();
 
 private:
 	std::shared_ptr<WindowManager> window;

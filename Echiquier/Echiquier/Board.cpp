@@ -2,9 +2,11 @@
 
 Board::Board(std::shared_ptr<WindowManager> window) {
 	this->window = window;
-	player = new PiecesManager(window, 1);
-	cpu = new PiecesManager(window, 2);
+	player = new Player(window, 1);
+	cpu = new Player(window, 2);
 	this->window->GetTextureManager()->InitTexture("assets/chessBoard.png", this->window->GetRenderer(), tex);
+	player->pieces->SetEnemy(cpu->pieces);	
+	cpu->pieces->SetEnemy(player->pieces);
 }
 
 Board::~Board() {
@@ -12,21 +14,32 @@ Board::~Board() {
 }
 
 void Board::Event(InputManager* inputManager) {
-	if (player->turn && !cpu->turn)
-		player->Event(inputManager);
-	else if (cpu->turn && !player->turn)
-		cpu->Event(inputManager);
+	if (player->GetTurn() && !cpu->GetTurn())
+		player->SelectPiece(inputManager);
+	else if (cpu->GetTurn() && !player->GetTurn())
+		cpu->SelectPiece(inputManager);
 }
 
 void Board::Update(InputManager* inputManager){
-	player->SetEnemy(cpu);	
-	cpu->SetEnemy(player);
-	player->Move(inputManager);
-	cpu->Move(inputManager);
+	player->Init();
+	cpu->Init();
+	player->pieces->CheckAttackedPlace();
+	cpu->pieces->CheckAttackedPlace();
+	if (player->GetTurn() && !cpu->GetTurn()){
+		player->Update();
+		player->Move(inputManager);
+	}
+	else if (!player->GetTurn() && cpu->GetTurn()) {
+		cpu->Update();
+		cpu->Move(inputManager);
+	}
+
+	bool test1 = player->pieces->CheckMate();
+	bool test2 = cpu->pieces->CheckMate();
 }
 
 void Board::DrawPieces() {
-	window->GetTextureManager()->DrawTexture(window->GetRenderer(), tex, { 0, 0, 300, 300 }, { 0, 0, 500, 500 });
-	player->Draw();
-	cpu->Draw();
+	window->GetTextureManager()->DrawTexture(window->GetRenderer(), tex, { 0, 0, 200, 200 }, { 0, 0, window->GetWindowWidth(), window->GetWindowHeight() });
+	player->pieces->Draw();
+	cpu->pieces->Draw();
 }

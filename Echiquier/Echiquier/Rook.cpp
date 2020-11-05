@@ -8,7 +8,7 @@ Rook::Rook(std::shared_ptr<WindowManager> window, int x, int y) {
 		src = { 537, 138, 128, 128 };
 	coordonates[0] = x, coordonates[1] = y;
 
-	dir1.SetVector(1, 0), dir2.SetVector(-1, 0), dir3.SetVector(0, 1), dir4.SetVector(0, -1);
+	dir[0].SetVector(1, 0), dir[1].SetVector(-1, 0), dir[2].SetVector(0, 1), dir[3].SetVector(0, -1);
 }
 
 Rook::Rook(std::shared_ptr<WindowManager> window, int coordonates[2]) {
@@ -18,12 +18,12 @@ Rook::Rook(std::shared_ptr<WindowManager> window, int coordonates[2]) {
 	else
 		src = { 537, 138, 128, 128 };
 	this->coordonates[0]= coordonates[0], this->coordonates[1] = coordonates[1];
-	dir1.SetVector(1, 1), dir2.SetVector(1, -1), dir3.SetVector(-1, -1), dir4.SetVector(-1, 1);
+	dir[0].SetVector(1, 1), dir[1].SetVector(1, -1), dir[2].SetVector(-1, -1), dir[3].SetVector(-1, 1);
 }
 
 Rook::~Rook() {}
 
-void Rook::Move(bool placeTaken[8][8], Pieces& piecesManager) {
+void Rook::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAttackedByEnemy[8][8], std::vector<std::vector<std::shared_ptr<Pieces>>>& allyPieces, std::vector<std::vector<std::shared_ptr<Pieces>>>& enemyPieces) {
 	possibleActions.clear();
 	/*for (auto& piece : piecesManager.enemy->pieces) {
 		if (isAttacked)
@@ -39,7 +39,7 @@ void Rook::Move(bool placeTaken[8][8], Pieces& piecesManager) {
 			}
 		}
 	}*/
-	if (piecesManager.king->isAttacked) {
+	/*if (piecesManager.king->isAttacked) {
 		for (int i = 1; i < 8; i++) {
 			Vector2D v = i * dir1;
 			if (coordonates[0] + v.x < 8 && !placeTaken[coordonates[0] + v.x][coordonates[1]]) {
@@ -86,6 +86,29 @@ void Rook::Move(bool placeTaken[8][8], Pieces& piecesManager) {
 				possibleActions.push_back(action);
 				if (piecesManager.enemy->placeTaken[coordonates[0]][coordonates[1] + v.y]) {
 					piecesManager.enemy->pieces[coordonates[0]][coordonates[1] + v.y]->isAttacked = true;
+					break;
+				}
+			}
+			else
+				break;
+		}
+	}*/
+	for (int i = 0; i < 4; i++) {
+		for (int j = 1; j < 8; j++) {
+			Vector2D v = j * dir[i];
+			if (coordonates[0] + v.x < 8 && coordonates[0] + v.x >= 0 &&
+				coordonates[1] + v.y < 8 && coordonates[1] + v.y >= 0) {
+
+				if (!placeTaken[coordonates[0] + v.x][coordonates[1] + v.y]) {
+					std::shared_ptr<PossiblePlacements> action(new PossiblePlacements(coordonates[0] + v.x, coordonates[1] + v.y));
+					possibleActions.push_back(action);
+					if (enemyPlaceTaken[coordonates[0] + v.x][coordonates[1] + v.y]) {
+						enemyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->isAttacked = true;
+						break;
+					}
+				}
+				else {
+					allyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->isDefended = true;
 					break;
 				}
 			}

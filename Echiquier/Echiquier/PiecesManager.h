@@ -5,24 +5,42 @@
 #include "Knight.h"
 #include "Rook.h"
 #include "Pawn.h"
-#include "InputManager.h"
 
-class PiecesManager : public Pieces
+class PiecesManager
 {
 public:
 	PiecesManager(std::shared_ptr<WindowManager> window, int player);
 	~PiecesManager();
 
-	void Event(InputManager* mouse);
-	void Move(InputManager* mouse);
+	void Move(std::shared_ptr<Pieces> pieceToMove, std::shared_ptr<PossiblePlacements> newPosition);
 	void Draw();
+	bool WillKingBeEndangered(std::shared_ptr<Pieces> currentPiece, std::shared_ptr<PossiblePlacements> eventualAction);
+	void CheckAttackedPlace();
+	void SetEnemy(PiecesManager* enemy);
 
-	void SetEnemy(Pieces* enemy);
+	bool CheckMate();
 
-private:
+public:
 	SDL_Texture* tex;
 	SDL_Texture* dotTex;
-	bool actionSelected;
 	std::vector<std::shared_ptr<Pieces>> rooks;
+	PiecesManager* enemy;
+	std::shared_ptr<WindowManager> window;
+	bool turn;
+	int side;
+	int direction;	
+	std::vector<std::shared_ptr<PossiblePlacements>> actionList;
+	std::vector<std::shared_ptr<Pieces>> piecesList;
+	std::vector<std::shared_ptr<Pieces>> predictionEnemyPiecesList;
+	std::vector<std::vector<std::shared_ptr<Pieces>>> pieces;
+	std::vector<std::vector<std::shared_ptr<Pieces>>> predictionPieces;
+	std::vector<std::vector<std::shared_ptr<Pieces>>> predictionEnemyPieces;
+	bool predictionPlaces[8][8];
+	bool predictionEnemyPlaces[8][8];
+	std::shared_ptr<Pieces> king;
+	std::shared_ptr<Pieces> predictionKing;
+	std::shared_ptr<Pieces> enemyKing;
+	bool placeTaken[8][8];
+	bool placeAttacked[8][8];
 };
 

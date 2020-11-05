@@ -8,9 +8,9 @@ public:
     Bishop(std::shared_ptr<WindowManager> window, int coordonates[2]);
     ~Bishop();
 
-    void Move(bool placeTaken[8][8], Pieces& piecesManager) override;
+    void Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAttackedByEnemy[8][8], std::vector<std::vector<std::shared_ptr<Pieces>>>& allyPieces, std::vector<std::vector<std::shared_ptr<Pieces>>>& enemyPiecess) override;
 
 public:
-    Vector2D dir1, dir2, dir3, dir4;
+    Vector2D dir[4];
 };
 

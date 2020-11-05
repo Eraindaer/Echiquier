@@ -155,6 +155,7 @@
     <ClCompile Include="Pawn.cpp" />
     <ClCompile Include="Pieces.cpp" />
     <ClCompile Include="PiecesManager.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="PossiblePlacements.cpp" />
     <ClCompile Include="Queen.cpp" />
     <ClCompile Include="Rook.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="Pawn.h" />
     <ClInclude Include="Pieces.h" />
     <ClInclude Include="PiecesManager.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="PossiblePlacements.h" />
     <ClInclude Include="Queen.h" />
     <ClInclude Include="Rook.h" />

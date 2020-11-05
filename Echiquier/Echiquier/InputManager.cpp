@@ -13,3 +13,11 @@ bool InputManager::GetMouseClick() {
 	}
 	return false;
 }
+
+int InputManager::GetMouseXPos() {
+	return window->GetEvent().button.x / (window->GetWindowWidth() / 8);
+}
+
+int InputManager::GetMouseYPos() {
+	return window->GetEvent().button.y / (window->GetWindowHeight() / 8);
+}

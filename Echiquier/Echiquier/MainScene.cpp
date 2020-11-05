@@ -20,6 +20,7 @@ void MainScene::Events() {
 
 void MainScene::Update() {
 	chessBoard->Update(inputManager);
+	
 }
 
 void MainScene::Draw() {
