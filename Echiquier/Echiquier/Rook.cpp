@@ -2,6 +2,7 @@
 
 Rook::Rook(std::shared_ptr<WindowManager> window, int x, int y) {
 	this->window = window;
+	value = 30;
 	if (y == 7)
 		src = { 537, 2, 128, 128 };
 	else
@@ -13,6 +14,7 @@ Rook::Rook(std::shared_ptr<WindowManager> window, int x, int y) {
 
 Rook::Rook(std::shared_ptr<WindowManager> window, int coordonates[2]) {
 	this->window = window;
+	value = 30;
 	if (coordonates[1] == 7)
 		src = { 537, 2, 128, 128 };
 	else
@@ -104,11 +106,13 @@ void Rook::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAtt
 					possibleActions.push_back(action);
 					if (enemyPlaceTaken[coordonates[0] + v.x][coordonates[1] + v.y]) {
 						enemyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->isAttacked = true;
+						enemyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->attackingValue += value;
 						break;
 					}
 				}
 				else {
 					allyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->isDefended = true;
+					allyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->defendingValue += value;
 					break;
 				}
 			}

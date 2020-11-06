@@ -1,5 +1,6 @@
 #pragma once
 #include "Player.h"
+#include "Computer.h"
 
 class Board
 {
@@ -10,6 +11,8 @@ public:
 	void Event(InputManager* inputManager);
 	void Update(InputManager* inputManager);
 	void DrawPieces();
+	
+	inline bool CheckMate() { return (cpu->pieces->CheckMate() || player->pieces->CheckMate()); }
 
 private:
 	SDL_Texture* tex;
@@ -17,6 +20,7 @@ private:
 
 public:
 	Player* player;
-	Player* cpu;
+	//Player* cpu;
+	Computer* cpu;
 };
 

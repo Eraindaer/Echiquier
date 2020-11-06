@@ -12,6 +12,7 @@ Player::~Player(){}
 void Player::Init() {
 	for (auto& piece : pieces->piecesList) {
 		piece->isAttacked = piece->isDefended = false;
+		piece->attackingValue = piece->defendingValue = 0;
 		piece->Move(pieces->placeTaken, pieces->enemy->placeTaken, pieces->enemy->placeAttacked, pieces->pieces, pieces->enemy->pieces);
 	}
 }

@@ -105,6 +105,7 @@ void PiecesManager::Move(std::shared_ptr<Pieces> pieceToMove, std::shared_ptr<Po
 		for (auto& piece : enemy->piecesList) {
 			if (newPosition->coordonates[0] == piece->coordonates[0] &&
 				newPosition->coordonates[1] == piece->coordonates[1]) {
+				enemy->pieces[piece->coordonates[0]][piece->coordonates[1]] = nullptr;
 				enemy->piecesList.erase(enemy->piecesList.begin() + iterator);
 				break;	
 			}

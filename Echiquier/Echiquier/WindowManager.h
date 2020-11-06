@@ -9,6 +9,7 @@ public:
 
 	void								   FrameEvents();
 
+	inline void                            SetRunState(bool state) { isRunning = state; }
 	inline bool							   GetRunState() { return isRunning;}
 	inline SDL_Event					   GetEvent() { return event; }
 	inline SDL_Window*					   GetWindow() { return window; }

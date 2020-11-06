@@ -3,7 +3,8 @@
 Board::Board(std::shared_ptr<WindowManager> window) {
 	this->window = window;
 	player = new Player(window, 1);
-	cpu = new Player(window, 2);
+	//cpu = new Player(window, 2);
+	cpu = new Computer(window, 2);
 	this->window->GetTextureManager()->InitTexture("assets/chessBoard.png", this->window->GetRenderer(), tex);
 	player->pieces->SetEnemy(cpu->pieces);	
 	cpu->pieces->SetEnemy(player->pieces);
@@ -16,8 +17,8 @@ Board::~Board() {
 void Board::Event(InputManager* inputManager) {
 	if (player->GetTurn() && !cpu->GetTurn())
 		player->SelectPiece(inputManager);
-	else if (cpu->GetTurn() && !player->GetTurn())
-		cpu->SelectPiece(inputManager);
+	//else if (cpu->GetTurn() && !player->GetTurn())
+		//cpu->SelectPiece(inputManager);
 }
 
 void Board::Update(InputManager* inputManager){
@@ -31,7 +32,10 @@ void Board::Update(InputManager* inputManager){
 	}
 	else if (!player->GetTurn() && cpu->GetTurn()) {
 		cpu->Update();
-		cpu->Move(inputManager);
+		cpu->Prediction(2);
+		cpu->Move(2);
+		cpu->predictionTree->ClearTree(cpu->predictionNode);
+		//cpu->Move(inputManager);
 	}
 
 	bool test1 = player->pieces->CheckMate();

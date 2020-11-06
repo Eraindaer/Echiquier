@@ -2,6 +2,7 @@
 
 King::King(std::shared_ptr<WindowManager>window, int x, int y, std::shared_ptr<Pieces>& rook1, std::shared_ptr<Pieces>& rook2) {
 	this->window = window;
+	value = 0;
 	if (y == 7)
 		src = { 3, 2, 128, 128 };
 	else
@@ -14,6 +15,7 @@ King::King(std::shared_ptr<WindowManager>window, int x, int y, std::shared_ptr<P
 
 King::King(std::shared_ptr<WindowManager> window, int coordonates[2], std::shared_ptr<Pieces>& rook1, std::shared_ptr<Pieces>& rook2) {
 	this->window = window;
+	value = 0;
 	if (coordonates[1] == 7)
 		src = { 3, 2, 128, 128 };
 	else

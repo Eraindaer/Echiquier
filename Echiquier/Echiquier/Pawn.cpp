@@ -2,6 +2,7 @@
 
 Pawn::Pawn(std::shared_ptr<WindowManager> window, int x, int y) {
 	this->window = window;
+	value = 10;
 	coordonates[0] = x, coordonates[1] = y;
 	if (y == 6) {
 		dir.SetVector(0, -1);
@@ -17,6 +18,7 @@ Pawn::Pawn(std::shared_ptr<WindowManager> window, int x, int y) {
 
 Pawn::Pawn(std::shared_ptr<WindowManager> window, int coordonates[2]) {
 	this->window = window;
+	value = 10;
 	if (coordonates[1] == 6) {
 		dir.SetVector(0, -1);
 		attackDir1.SetVector(-1, -1), attackDir2.SetVector(1, -1);
@@ -117,19 +119,19 @@ void Pawn::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAtt
 		if (enemyPlaceTaken[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]) {
 			std::shared_ptr<PossiblePlacements> action(new PossiblePlacements(coordonates[0] + attackDir1.x, coordonates[1] + attackDir1.y));
 			possibleActions.push_back(action);
-			enemyPieces[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]->isAttacked = true;
+			enemyPieces[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]->isAttacked = true, enemyPieces[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]->attackingValue += value;
 		}
 		else if (placeTaken[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y])
-			allyPieces[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]->isDefended = true;
+			allyPieces[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]->isDefended = true, allyPieces[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]->defendingValue += value;
 	}
 
 	if (coordonates[0] + attackDir2.x < 8 && coordonates[0] + attackDir2.x >= 0 && coordonates[1] + attackDir2.y < 8 && coordonates[1] + attackDir2.y >= 0) {
 		if (enemyPlaceTaken[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]) {
 			std::shared_ptr<PossiblePlacements> action(new PossiblePlacements(coordonates[0] + attackDir2.x, coordonates[1] + attackDir2.y));
 			possibleActions.push_back(action);
-			enemyPieces[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]->isAttacked = true;
+			enemyPieces[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]->isAttacked = true, enemyPieces[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]->attackingValue += value;
 		}
 		else if (placeTaken[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y])
-			allyPieces[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]->isDefended = true;
+			allyPieces[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]->isDefended = true, allyPieces[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]->defendingValue += value;
 	}
 }

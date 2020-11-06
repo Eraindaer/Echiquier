@@ -15,6 +15,7 @@ public:
 
 	void SetKing(std::shared_ptr<Pieces> king);
 
+
 public:
 	short int coordonates[2];
 	std::shared_ptr<WindowManager> window;
@@ -24,8 +25,9 @@ public:
 	bool isDefended;
 	bool selection;
 	bool hasMoved;
+	int value;
 	
-	
+	int attackingValue, defendingValue;
 	std::vector<std::shared_ptr<PossiblePlacements>> possibleActions;
 	
 	std::shared_ptr<Pieces> king;
