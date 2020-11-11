@@ -19,8 +19,9 @@ void MainScene::Events() {
 }
 
 void MainScene::Update() {
+	//window->SetRunState(!chessBoard->CheckMate());
 	chessBoard->Update(inputManager);	
-	window->SetRunState(!chessBoard->CheckMate());
+	
 }
 
 void MainScene::Draw() {

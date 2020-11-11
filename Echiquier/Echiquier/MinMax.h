@@ -4,9 +4,15 @@
 #include "PiecesManager.h"
 #define HIGHNUMBER 1000000000
 
-struct Node {
-	int												     value = 0;
-	bool												 hasChildren = false;
+class Node {
+public :
+	Node();
+	~Node();
+public:
+
+	int												     value;
+	int                                                  placeValue[8][8];
+	bool												 hasChildren;
 	bool                                                 placeTaken[8][8];
 	bool                                                 enemyPlaceTaken[8][8];
 	bool                                                 placeAttacked[8][8];
@@ -26,10 +32,21 @@ public:
 	NodeTree();
 	~NodeTree();
 
-	void Init(Node& currentNode, int depth);
+	void Init(Node& currentNode, int depth, bool isComputer);
 	void Print(Node currentNode);
-	void ClearTree(Node currentNode);
+	void ClearTree(Node& currentNode);
 
 	int  MinMax(Node& currentNode, int depth,/* int alpha, int beta,*/ bool maximizingPlayer);
+	bool WillKingBeEndangered(Node currentNode, std::shared_ptr<Pieces> currentPiece, std::shared_ptr<PossiblePlacements> eventualAction, bool side);
+
+private:	
+	int													 iterations;
+	bool predictionPlaces[8][8];
+	bool predictionEnemyPlaces[8][8];
+	bool placeAttackedByEnemy[8][8];
+	std::shared_ptr<Pieces> predictionKing;
+	std::vector<std::vector<std::shared_ptr<Pieces>>> predictionPieces;
+	std::vector<std::vector<std::shared_ptr<Pieces>>> predictionEnemyPieces;
+
 };
 

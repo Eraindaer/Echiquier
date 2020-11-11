@@ -11,7 +11,7 @@ public:
 
 	void Init();
 	void SelectPiece(InputManager* inputManager);
-	void Move(InputManager* inputManager);
+	void Move(InputManager* inputManager, std::vector<std::shared_ptr<Pieces>>& piecesMoved, std::vector<std::shared_ptr<PossiblePlacements>>& actionsDone);
 	void Update();
 
 	inline std::shared_ptr<Pieces> GetKing() { return pieces->king; }
@@ -20,5 +20,6 @@ public:
 
 public:
 	PiecesManager* pieces;
+	std::shared_ptr<Pieces> pieceSelected;
 	bool actionSelected;
 };

@@ -1,6 +1,7 @@
 #pragma once
 #include "Player.h"
 #include "Computer.h"
+#define DEPTH 2
 
 class Board
 {
@@ -20,7 +21,9 @@ private:
 
 public:
 	Player* player;
-	//Player* cpu;
+	//Computer* player;
 	Computer* cpu;
+	std::vector<std::shared_ptr<Pieces>> piecesMoved;
+	std::vector<std::shared_ptr<PossiblePlacements>> actionsDone;
 };
 

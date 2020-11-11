@@ -2,7 +2,7 @@
 
 Queen::Queen(std::shared_ptr<WindowManager> window, int x, int y) {
 	this->window = window;
-	value = 50;
+	value = QUEENVALUE;
 	if (y == 7)
 		src = { 136, 2, 128, 128 };
 	else
@@ -13,7 +13,7 @@ Queen::Queen(std::shared_ptr<WindowManager> window, int x, int y) {
 }
 Queen::Queen(std::shared_ptr<WindowManager> window, int coordonates[2]) {
 	this->window = window;
-	value = 50;
+	value = QUEENVALUE;
 	if (coordonates[1] == 7)
 		src = { 136, 2, 128, 128 };
 	else
@@ -158,13 +158,15 @@ void Queen::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAt
 					possibleActions.push_back(action);
 					if (enemyPlaceTaken[coordonates[0] + v.x][coordonates[1] + v.y]) {
 						enemyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->isAttacked = true;
-						enemyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->attackingValue += value;
+						enemyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->attackingValue -= value / 3;
+						this->attackingValue += enemyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->value / 3;
 						break;
 					}
 				}
 				else {
 					allyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->isDefended = true;
-					allyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->defendingValue += value;
+					allyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->defendingValue += value / 3;
+					//this->defendingValue += allyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->value / 2;
 					break;
 				}
 			}

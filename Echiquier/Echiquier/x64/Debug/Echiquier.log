@@ -1,19 +1,2 @@
-﻿  Bishop.cpp
-  Board.cpp
-  Computer.cpp
-  InputManager.cpp
-  King.cpp
-  Knight.cpp
-  MainScene.cpp
-  MinMax.cpp
-  Pawn.cpp
-  Pieces.cpp
-  PiecesManager.cpp
-  Player.cpp
-  PossiblePlacements.cpp
-  Queen.cpp
-  Rook.cpp
-  WindowManager.cpp
-  main.cpp
-  Génération de code en cours...
+﻿  Player.cpp
   Echiquier.vcxproj -> G:\Repos\C++ Repos\Echiquier\x64\Debug\Echiquier.exe

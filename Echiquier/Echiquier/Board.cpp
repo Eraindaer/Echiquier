@@ -3,6 +3,7 @@
 Board::Board(std::shared_ptr<WindowManager> window) {
 	this->window = window;
 	player = new Player(window, 1);
+	//player = new Computer(window, 1);
 	//cpu = new Player(window, 2);
 	cpu = new Computer(window, 2);
 	this->window->GetTextureManager()->InitTexture("assets/chessBoard.png", this->window->GetRenderer(), tex);
@@ -17,8 +18,8 @@ Board::~Board() {
 void Board::Event(InputManager* inputManager) {
 	if (player->GetTurn() && !cpu->GetTurn())
 		player->SelectPiece(inputManager);
-	//else if (cpu->GetTurn() && !player->GetTurn())
-		//cpu->SelectPiece(inputManager);
+	/*else if (cpu->GetTurn() && !player->GetTurn())
+		cpu->SelectPiece(inputManager);*/
 }
 
 void Board::Update(InputManager* inputManager){
@@ -28,18 +29,24 @@ void Board::Update(InputManager* inputManager){
 	cpu->pieces->CheckAttackedPlace();
 	if (player->GetTurn() && !cpu->GetTurn()){
 		player->Update();
-		player->Move(inputManager);
+		player->Move(inputManager, piecesMoved, actionsDone);
+		/*player->Prediction(DEPTH);
+		player->Move(DEPTH);
+		piecesMoved.push_back(player->pieceToMove);
+		actionsDone.push_back(player->action);
+		player->predictionTree->ClearTree(player->predictionNode);*/
 	}
-	else if (!player->GetTurn() && cpu->GetTurn()) {
+	else if (!player->GetTurn() && cpu->GetTurn()) {		
+		
 		cpu->Update();
-		cpu->Prediction(2);
-		cpu->Move(2);
+		//cpu->Move(inputManager, piecesMoved, actionsDone);
+		cpu->Prediction(DEPTH);
+		cpu->Move(DEPTH);
+		piecesMoved.push_back(cpu->pieceToMove);
+		actionsDone.push_back(cpu->action);
 		cpu->predictionTree->ClearTree(cpu->predictionNode);
-		//cpu->Move(inputManager);
 	}
 
-	bool test1 = player->pieces->CheckMate();
-	bool test2 = cpu->pieces->CheckMate();
 }
 
 void Board::DrawPieces() {

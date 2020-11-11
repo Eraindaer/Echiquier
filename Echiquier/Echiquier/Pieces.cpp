@@ -3,7 +3,7 @@
 Pieces::Pieces() {
 	coordonates[0] = coordonates[1] = 0;
 	value = attackingValue = defendingValue = 0;
-	isAttacked = isDefended = false;
+	isAttacked = isDefended = isCastling = false;
 	hasMoved = false;
 	selection = false;
 	src = { 0,0,0,0 };

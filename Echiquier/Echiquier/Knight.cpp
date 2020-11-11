@@ -2,7 +2,7 @@
 
 Knight::Knight(std::shared_ptr<WindowManager> window, int x, int y) {
 	this->window = window;
-	value = 20;
+	value = KNIGHTVALUE;
 	if (y == 7)
 		src = { 404, 2, 128, 128 };
 	else
@@ -15,7 +15,7 @@ Knight::Knight(std::shared_ptr<WindowManager> window, int x, int y) {
 
 Knight::Knight(std::shared_ptr<WindowManager> window, int coordonates[2]) {
 	this->window = window;
-	value = 20;
+	value = KNIGHTVALUE;
 	if (coordonates[1] == 7)
 		src = { 404, 2, 128, 128 };
 	else
@@ -63,11 +63,14 @@ void Knight::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeA
 					possibleActions.push_back(action);
 					if (enemyPlaceTaken[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]) {
 						enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->isAttacked = true;
-						enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->attackingValue += value;
+						enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->attackingValue -= value / 3;
+						this->attackingValue += enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->value / 3;
 					}
 				}
 				else
-					allyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->isDefended = true, allyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->defendingValue += value;
+					allyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->isDefended = true,
+					allyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->defendingValue += value / 3;
+					//this->defendingValue += allyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->value / 2;
 			}
 		}
 	}

@@ -3,11 +3,12 @@
 
 Computer::Computer(std::shared_ptr<WindowManager> window, int player) {
 	pieces = new PiecesManager(window, player);
-	
+	predictionTree = new NodeTree();
 }
 
 Computer::~Computer() {
 	delete(pieces);
+	delete(predictionTree);
 }
 
 void Computer::Init() {
@@ -31,7 +32,7 @@ void Computer::Prediction(int depth) {
 			predictionNode.enemyPlaceTaken[i][j] = pieces->enemy->placeTaken[i][j];
 		}
 	}
-	predictionTree->Init(predictionNode, depth);
+	predictionTree->Init(predictionNode, depth, true);
 }
 
 void Computer::Move(int depth) {

@@ -17,7 +17,7 @@ public:
 
 public:
 	PiecesManager* pieces;
-	std::shared_ptr<NodeTree> predictionTree;
+	NodeTree* predictionTree;
 	std::shared_ptr<Pieces> pieceToMove;
 	std::shared_ptr<PossiblePlacements> action;
 	Node predictionNode;

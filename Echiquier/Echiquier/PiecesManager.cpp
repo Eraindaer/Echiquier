@@ -116,8 +116,25 @@ void PiecesManager::Move(std::shared_ptr<Pieces> pieceToMove, std::shared_ptr<Po
 	pieces[pieceToMove->coordonates[0]][pieceToMove->coordonates[1]] = nullptr;
 	placeTaken[pieceToMove->coordonates[0]][pieceToMove->coordonates[1]] = false, placeTaken[newPosition->coordonates[0]][newPosition->coordonates[1]] = true;
 	pieceToMove->SetCoordonates(newPosition->coordonates[0], newPosition->coordonates[1]);
+	if (pieceToMove->isCastling) {
+		int tile = (std::abs(pieceToMove->coordonates[0] - 0) < std::abs(pieceToMove->coordonates[0] - 7)) ? 1 : -1;
+		if (tile == 1) {
+			pieces[pieceToMove->coordonates[0] + tile][pieceToMove->coordonates[1]] = pieces[0][pieceToMove->coordonates[1]], pieces[0][pieceToMove->coordonates[1]] = nullptr;
+			placeTaken[0][pieceToMove->coordonates[1]] = false;
+		}
+		else if (tile == -1) {
+			pieces[pieceToMove->coordonates[0] + tile][pieceToMove->coordonates[1]] = pieces[7][pieceToMove->coordonates[1]], pieces[7][pieceToMove->coordonates[1]] = nullptr;
+			placeTaken[7][pieceToMove->coordonates[1]] = false;
+		}
+		placeTaken[pieceToMove->coordonates[0] + tile][pieceToMove->coordonates[1]] = true;
+		pieceToMove->isCastling = false;
+	}
 	turn = false, enemy->turn = true;
 	pieceToMove->possibleActions.clear();
+
+	/*if (enemy->CheckMate() || CheckMate()) {
+		turn = enemy->turn = false;
+	}*/
 }
 
 void PiecesManager::Draw() {
@@ -223,7 +240,7 @@ bool PiecesManager::CheckMate() {
 		}
 	}
 
-	if (actionPossible == 0 && enemy->placeAttacked[king->coordonates[0]][king->coordonates[1]])
+	if (actionPossible == 0 && king->isAttacked)
 		return true;
 
 	return false;
