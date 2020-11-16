@@ -2,11 +2,47 @@
 
 Rook::Rook(std::shared_ptr<WindowManager> window, int x, int y) {
 	this->window = window;
-	value = ROOKVALUE;
-	if (y == 7)
+	ID = 3;
+	if (y == 7) {
 		src = { 537, 2, 128, 128 };
-	else
+		int pieceSquareValue[8][8] =
+		{ {0,0,0,5,5,0,0,0},
+		  {5,10,10,10,10,10,10,5},
+		  {-5,0,0,0,0,0,0,-5},
+		  {-5,0,0,0,0,0,0,-5},
+		  {-5,0,0,0,0,0,0,-5},
+		  {-5,0,0,0,0,0,0,-5},
+		  {-5,0,0,0,0,0,0,-5},
+		  {0,0,0,5,5,0,0,0} };
+		
+		for (int i = 0; i < 8; i++) {
+			std::vector<int> line;
+			for (int j = 0; j < 8; j++) {
+				line.push_back(pieceSquareValue[i][j]);
+			}
+			pieceSquareTable.push_back(line);
+		}
+	}
+	else {
 		src = { 537, 138, 128, 128 };
+		int pieceSquareValue[8][8] =
+		{ {0,0,0,5,5,0,0,0},
+		  {-5,0,0,0,0,0,0,-5},
+		  {-5,0,0,0,0,0,0,-5},
+		  {-5,0,0,0,0,0,0,-5},
+		  {-5,0,0,0,0,0,0,-5},
+		  {-5,0,0,0,0,0,0,-5},
+		  {5,10,10,10,10,10,10,5},
+		  {0,0,0,0,0,0,0,0} };
+		
+		for (int i = 0; i < 8; i++) {
+			std::vector<int> line;
+			for (int j = 0; j < 8; j++) {
+				line.push_back(pieceSquareValue[i][j]);
+			}
+			pieceSquareTable.push_back(line);
+		}
+	}
 	coordonates[0] = x, coordonates[1] = y;
 
 	dir[0].SetVector(1, 0), dir[1].SetVector(-1, 0), dir[2].SetVector(0, 1), dir[3].SetVector(0, -1);
@@ -14,11 +50,44 @@ Rook::Rook(std::shared_ptr<WindowManager> window, int x, int y) {
 
 Rook::Rook(std::shared_ptr<WindowManager> window, int coordonates[2]) {
 	this->window = window;
-	value = ROOKVALUE;
-	if (coordonates[1] == 7)
+	if (coordonates[1] == 7) {
 		src = { 537, 2, 128, 128 };
-	else
+		int pieceSquareValue[8][8] =
+		{ {0,0,0,0,0,0,0,0},
+		  {0,0,0,0,0,0,0,0},
+		  {0,0,0,0,0,0,0,0},
+		  {0,0,0,0,0,0,0,0},
+		  {0,0,0,0,0,0,0,0},
+		  {0,0,0,0,0,0,0,0},
+		  {0,0,0,0,0,0,0,0},
+		  {0,0,0,0,0,0,0,0} };
+		for (int i = 0; i < 8; i++) {
+			std::vector<int> line;
+			for (int j = 0; j < 8; j++) {
+				line.push_back(pieceSquareValue[i][j]);
+			}
+			pieceSquareTable.push_back(line);
+		}
+	}
+	else {
 		src = { 537, 138, 128, 128 };
+		int pieceSquareValue[8][8] =
+		{ {0,0,0,0,0,0,0,0},
+		  {0,0,0,0,0,0,0,0},
+		  {0,0,0,0,0,0,0,0},
+		  {0,0,0,0,0,0,0,0},
+		  {0,0,0,0,0,0,0,0},
+		  {0,0,0,0,0,0,0,0},
+		  {0,0,0,0,0,0,0,0},
+		  {0,0,0,0,0,0,0,0} };
+		for (int i = 0; i < 8; i++) {
+			std::vector<int> line;
+			for (int j = 0; j < 8; j++) {
+				line.push_back(pieceSquareValue[i][j]);
+			}
+			pieceSquareTable.push_back(line);
+		}
+	}
 	this->coordonates[0]= coordonates[0], this->coordonates[1] = coordonates[1];
 	dir[0].SetVector(1, 1), dir[1].SetVector(1, -1), dir[2].SetVector(-1, -1), dir[3].SetVector(-1, 1);
 }
@@ -27,6 +96,7 @@ Rook::~Rook() {}
 
 void Rook::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAttackedByEnemy[8][8], std::vector<std::vector<std::shared_ptr<Pieces>>>& allyPieces, std::vector<std::vector<std::shared_ptr<Pieces>>>& enemyPieces) {
 	possibleActions.clear();
+	value = ROOKVALUE + pieceSquareTable[coordonates[0]][coordonates[1]];
 	/*for (auto& piece : piecesManager.enemy->pieces) {
 		if (isAttacked)
 			break;
@@ -106,8 +176,8 @@ void Rook::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAtt
 					possibleActions.push_back(action);
 					if (enemyPlaceTaken[coordonates[0] + v.x][coordonates[1] + v.y]) {
 						enemyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->isAttacked = true;
-						enemyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->attackingValue -= value  / 3;
-						this->attackingValue += enemyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->value / 3;
+						enemyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->attackingValue += enemyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->value/2;
+						this->attackingValue -= enemyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->value / 3;
 						break;
 					}
 				}

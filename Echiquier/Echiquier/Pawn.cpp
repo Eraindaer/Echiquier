@@ -2,32 +2,99 @@
 
 Pawn::Pawn(std::shared_ptr<WindowManager> window, int x, int y) {
 	this->window = window;
-	value = PAWNVALUE;
+	ID = 0;
 	coordonates[0] = x, coordonates[1] = y;
 	if (y == 6) {
 		dir.SetVector(0, -1);
 		attackDir1.SetVector(-1, -1), attackDir2.SetVector(1, -1);
 		src = { 667, 2 , 128, 128 };
+		int pieceSquareValue[8][8] =
+		{ {0,0,0,0,0,0,0,0},
+		  {50,50,50,50,50,50,50,50},
+		  {10,10,20,30,30,20,10,10},
+		  {5,5,10,25,25,10,5,5},
+		  {0,0,0,20,20,0,0,0},
+		  {5,-5,-10,0,0,-10,-5,5},
+		  {5,10,10,-20,-20,10,10,5},
+		  {0,0,0,0,0,0,0,0} };
+		
+		for (int i = 0; i < 8; i++) {
+			std::vector<int> line;
+			for (int j = 0; j < 8; j++) {
+				line.push_back(pieceSquareValue[i][j]);
+			}
+			pieceSquareTable.push_back(line);
+		}
 	}
 	else {
 		dir.SetVector(0, 1);
 		attackDir1.SetVector(-1, 1), attackDir2.SetVector(1, 1);
 		src = { 667, 138, 128, 128 };
+		int pieceSquareValue[8][8] =
+		{ {0,0,0,0,0,0,0,0},
+		  {5,10,10,-20,-20,10,10,5},
+		  {5,-5,-10,0,0,-10,-5,5},
+		  {0,0,0,20,20,0,0,0},
+		  {5,5,10,25,25,10,5,5},
+		  {10,10,20,30,30,20,10,10},
+		  {50,50,50,50,50,50,50,50},
+		  {0,0,0,0,0,0,0,0} };
+		
+
+		for (int i = 0; i < 8; i++) {
+			std::vector<int> line;
+			for (int j = 0; j < 8; j++) {
+				line.push_back(pieceSquareValue[i][j]);
+			}
+			pieceSquareTable.push_back(line);
+		}
 	}
 }
 
 Pawn::Pawn(std::shared_ptr<WindowManager> window, int coordonates[2]) {
 	this->window = window;
-	value = PAWNVALUE;
 	if (coordonates[1] == 6) {
 		dir.SetVector(0, -1);
 		attackDir1.SetVector(-1, -1), attackDir2.SetVector(1, -1);
 		src = { 667, 2 , 128, 128 };
+		int pieceSquareValue[8][8] =
+		{ {0,0,0,0,0,0,0,0},
+		  {5,10,10,-20,-20,10,10,5},
+		  {5,-5,-10,0,0,-10,-5,5},
+		  {0,0,0,20,20,0,0,0},
+		  {5,5,10,25,25,10,5,5},
+		  {10,10,20,30,30,20,10,10},
+		  {50,50,50,50,50,50,50,50},
+		  {0,0,0,0,0,0,0,0} };
+		for (int i = 0; i < 8; i++) {
+			std::vector<int> line;
+			for (int j = 0; j < 8; j++) {
+				line.push_back(pieceSquareValue[i][j]);
+			}
+			pieceSquareTable.push_back(line);
+		}
 	}
 	else {
 		dir.SetVector(0, 1);
 		attackDir1.SetVector(-1, 1), attackDir2.SetVector(1, 1);
 		src = { 667, 138, 128, 128 };
+		int pieceSquareValue[8][8] =
+		{ {0,0,0,0,0,0,0,0},
+		  {50,50,50,50,50,50,50,50},
+		  {10,10,20,30,30,20,10,10},
+		  {5,5,10,25,25,10,5,5},
+		  {0,0,0,20,20,0,0,0},
+		  {5,-5,-10,0,0,-10,-5,5},
+		  {5,10,10,-20,-20,10,10,5},
+		  {0,0,0,0,0,0,0,0} };
+
+		for (int i = 0; i < 8; i++) {
+			std::vector<int> line;
+			for (int j = 0; j < 8; j++) {
+				line.push_back(pieceSquareValue[i][j]);
+			}
+			pieceSquareTable.push_back(line);
+		}
 	}
 	this->coordonates[0] = coordonates[0], this->coordonates[1] = coordonates[1];
 }
@@ -93,6 +160,8 @@ void Pawn::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAtt
 			}
 		}
 	}*/
+    
+	value = PAWNVALUE + pieceSquareTable[coordonates[0]][coordonates[1]];
 
 	if (!hasMoved) {
 		for (int i = 1; i <= 2; i++) {
@@ -119,8 +188,8 @@ void Pawn::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAtt
 		if (enemyPlaceTaken[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]) {
 			std::shared_ptr<PossiblePlacements> action(new PossiblePlacements(coordonates[0] + attackDir1.x, coordonates[1] + attackDir1.y));
 			possibleActions.push_back(action);
-			enemyPieces[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]->isAttacked = true, enemyPieces[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]->attackingValue -= value / 3,
-			this->attackingValue += enemyPieces[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]->value / 3;
+			enemyPieces[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]->isAttacked = true, enemyPieces[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]->attackingValue += enemyPieces[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]->value/2,
+			this->attackingValue -= enemyPieces[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]->value / 3;
 		}
 		else if (placeTaken[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y])
 			allyPieces[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]->isDefended = true,
@@ -132,8 +201,8 @@ void Pawn::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAtt
 		if (enemyPlaceTaken[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]) {
 			std::shared_ptr<PossiblePlacements> action(new PossiblePlacements(coordonates[0] + attackDir2.x, coordonates[1] + attackDir2.y));
 			possibleActions.push_back(action);
-			enemyPieces[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]->isAttacked = true, enemyPieces[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]->attackingValue -= value / 3,
-			this->attackingValue += enemyPieces[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]->value / 3;
+			enemyPieces[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]->isAttacked = true, enemyPieces[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]->attackingValue += enemyPieces[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]->value/2,
+			this->attackingValue -= enemyPieces[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]->value / 3;
 		}
 		else if (placeTaken[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y])
 			allyPieces[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]->isDefended = true,

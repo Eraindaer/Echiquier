@@ -2,7 +2,8 @@
 
 Node::Node() {
 	value = 0;
-	hasChildren = false;
+	finishingNode = false;
+	previousPosition[0] = previousPosition[1] = enemyPreviousPosition[0] = enemyPreviousPosition[1] = -1;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			placeTaken[i][j] = enemyPlaceTaken[i][j] = placeAttacked[i][j] = placeAttackedByEnemy[i][j] = false;
@@ -12,6 +13,28 @@ Node::Node() {
 }
 Node::~Node() {
 
+}
+
+bool Node::CheckMate(std::shared_ptr<Pieces> king) {
+	if (king->isAttacked) {
+		for (auto& action : king->possibleActions)
+			if (action != nullptr)
+				return false;
+		return true;
+	}
+	else
+		return false;
+}
+
+bool Node::CheckEnemyMate(std::shared_ptr<Pieces> enemyKing) {
+	if (enemyKing->isAttacked) {
+		for (auto& action : enemyKing->possibleActions)
+			if (action != nullptr)
+				return false;
+		return true;
+	}
+	else
+		return false;
 }
 
 
@@ -37,9 +60,11 @@ void NodeTree::Init(Node& currentNode, int depth, bool isComputer) {
 		for (int j = 0; j < 8; j++) {
 			if (currentNode.enemyPieces[i][j] != nullptr) {
 				currentNode.enemyPieces[i][j]->attackingValue = currentNode.enemyPieces[i][j]->defendingValue = 0;
+				currentNode.enemyPieces[i][j]->isAttacked = currentNode.enemyPieces[i][j]->isDefended = false;
 			}
 			else if (currentNode.pieces[i][j] != nullptr) {
 				currentNode.pieces[i][j]->attackingValue = currentNode.pieces[i][j]->defendingValue = 0;
+				currentNode.pieces[i][j]->isAttacked = currentNode.pieces[i][j]->isDefended = false;
 			}
 		}
 	}
@@ -61,9 +86,10 @@ void NodeTree::Init(Node& currentNode, int depth, bool isComputer) {
 		}
 	}
 
-	if (depth > 0)
-		currentNode.hasChildren = true;
-	if (currentNode.hasChildren) {
+	if (currentNode.CheckMate(currentNode.king) || currentNode.CheckEnemyMate(currentNode.enemyKing))
+		currentNode.finishingNode = true;
+
+	if (!currentNode.finishingNode) {
 		/*for (int i = 0; i < 3; i++) {
 			Node n;
 			currentNode.children.push_back(n);
@@ -98,6 +124,8 @@ void NodeTree::Init(Node& currentNode, int depth, bool isComputer) {
 								Node n;
 								n.pieces = currentNode.pieces;
 								n.enemyPieces = currentNode.enemyPieces;
+								n.previousPosition[0] = currentNode.pieces[i][j]->coordonates[0], n.previousPosition[1] = currentNode.pieces[i][j]->coordonates[1];
+								n.enemyPreviousPosition[0] = currentNode.enemyPreviousPosition[0], n.enemyPreviousPosition[1] = currentNode.enemyPreviousPosition[1];
 								n.pieces[action->coordonates[0]][action->coordonates[1]] = n.pieces[i][j], n.pieces[i][j] = nullptr;
 								for (int i = 0; i < 8; i++)
 									for (int j = 0; j < 8; j++) {
@@ -115,11 +143,18 @@ void NodeTree::Init(Node& currentNode, int depth, bool isComputer) {
 								n.pieceToMove = currentNode.pieces[i][j];
 								n.action = action;
 
+								if (depth - 1 == 0)
+									n.finishingNode = true;
+
 								currentNode.children.push_back(n);
 							}
 						}
 					}
 				}
+			}
+			currentNode.value = 0;
+			for (Node& child : currentNode.children) {
+				Init(child, depth - 1, false);
 			}
 		}
 		else {
@@ -148,6 +183,8 @@ void NodeTree::Init(Node& currentNode, int depth, bool isComputer) {
 								Node n;
 								n.pieces = currentNode.pieces;
 								n.enemyPieces = currentNode.enemyPieces;
+								n.enemyPreviousPosition[0] = currentNode.enemyPieces[i][j]->coordonates[0], n.enemyPreviousPosition[1] = currentNode.enemyPieces[i][j]->coordonates[1];
+								n.previousPosition[0] = currentNode.previousPosition[0], n.previousPosition[1] = currentNode.previousPosition[1];
 								n.enemyPieces[action->coordonates[0]][action->coordonates[1]] = n.enemyPieces[i][j], n.enemyPieces[i][j] = nullptr;
 								for (int i = 0; i < 8; i++)
 									for (int j = 0; j < 8; j++) {
@@ -165,23 +202,29 @@ void NodeTree::Init(Node& currentNode, int depth, bool isComputer) {
 								n.pieceToMove = currentNode.enemyPieces[i][j];
 								n.action = action;
 
+								if (depth - 1 == 0)
+									n.finishingNode = true;
+
 								currentNode.children.push_back(n);
 							}
 						}
 					}
 				}
 			}
-		}
-		currentNode.value = 0;
-		for (Node& child : currentNode.children) {
-			Init(child, depth - 1, !isComputer);
+
+
+			currentNode.value = 0;
+			for (Node& child : currentNode.children) {
+				Init(child, depth - 1, true);
+			}
 		}
 	}
 	else {
-		
+
 		//currentNode.value = rand() % 100 + 1; //Valeur pour l'exemple, ce ne sera pas cette valeur évidemment
 
-
+		int numberOfMoves[2] = { 0, 0 };
+		int pieces[2][6] = { {0,0,0,0,0,0},{0,0,0,0,0,0} };
 		/*for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
 				if (currentNode.pieces[i][j] != nullptr) {
@@ -220,7 +263,77 @@ void NodeTree::Init(Node& currentNode, int depth, bool isComputer) {
 			}
 		}*/
 
+		/*if (GetKingMoves(currentNode.king) == 0 && currentNode.king->isAttacked) {
+			for (int i = 0; i < 8; i++)
+				for (int j = 0; j < 8; j++)
+					if (currentNode.pieces[i][j] != nullptr)
+						currentNode.pieces[i][j]->checkMate = true;
+		}
+		else if (GetKingMoves(currentNode.enemyKing) == 0 && currentNode.enemyKing->isAttacked) {
+			for (int i = 0; i < 8; i++)
+				for (int j = 0; j < 8; j++)
+					if (currentNode.enemyPieces[i][j] != nullptr)
+						currentNode.enemyPieces[i][j]->checkMate = true;
+		}*/
+
+		
+
 		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+				if (currentNode.pieces[i][j] != nullptr) {
+					pieces[0][currentNode.pieces[i][j]->ID]++;
+					//currentNode.value += currentNode.pieces[i][j]->value;
+					//currentNode.value += currentNode.pieces[i][j]->defendingValue;
+					//currentNode.value -= currentNode.pieces[i][j]->attackingValue;
+					/*if (currentNode.king->isAttacked)
+						pieces[0][5]--;
+					else {
+						
+					}*/
+					for (auto& action : currentNode.pieces[i][j]->possibleActions) {
+							if (action != nullptr) {
+								numberOfMoves[0]++;
+							}
+						}
+				}
+				else if (currentNode.enemyPieces[i][j] != nullptr) {
+					pieces[1][currentNode.enemyPieces[i][j]->ID]++;
+					//currentNode.value -= currentNode.enemyPieces[i][j]->value;
+					//currentNode.value -= currentNode.enemyPieces[i][j]->defendingValue;
+					//currentNode.value += currentNode.enemyPieces[i][j]->attackingValue;
+					/*if (currentNode.enemyKing->isAttacked)
+						pieces[1][5]--;
+					else {
+						
+					}*/
+					for (auto& action : currentNode.enemyPieces[i][j]->possibleActions) {
+							if (action != nullptr) {
+								numberOfMoves[1]++;
+							}
+						}
+				}
+			}
+		}
+
+		currentNode.value += KINGVALUE * (pieces[0][5] - pieces[1][5])
+						  + QUEENVALUE * (pieces[0][4] - pieces[1][4])
+						  + ROOKVALUE * (pieces[0][3] - pieces[1][3])
+						  + BISHOPVALUE * (pieces[0][2] - pieces[1][2]) 
+						  + KNIGHTVALUE * (pieces[0][1] - pieces[1][1])
+						  + PAWNVALUE * (pieces[0][0] - pieces[0][0])
+						  + 10 * (numberOfMoves[0] - numberOfMoves[1]);
+
+
+		/*if (currentNode.king->isAttacked)
+			currentNode.value -= 200'000;
+		else if (currentNode.enemyKing->isAttacked)
+			currentNode.value += 200'000;*/
+
+		if (currentNode.CheckMate(currentNode.king))
+			currentNode.value = -1'000'000;
+		else if (currentNode.CheckEnemyMate(currentNode.enemyKing))
+			currentNode.value = 1'000'000;
+		/*for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
 				if (currentNode.pieces[i][j] != nullptr) {
 					currentNode.value += currentNode.pieces[i][j]->value;
@@ -248,17 +361,31 @@ void NodeTree::Init(Node& currentNode, int depth, bool isComputer) {
 						}
 					}
 				}
-				if (currentNode.placeTaken[i][j]) {
-					currentNode.value += 2 * (std::abs(currentNode.king->coordonates[1] - j));
+				/*if (currentNode.placeTaken[i][j]) {
+					currentNode.value += std::abs(currentNode.king->coordonates[1] - j);
 				}
-				if (currentNode.placeTaken[i][j]) {
-					currentNode.value -= 2 * (std::abs(currentNode.king->coordonates[1] - j));
+				if (currentNode.enemyPlaceTaken[i][j]) {
+					currentNode.value -= std::abs(currentNode.enemyKing->coordonates[1] - j);
 				}
-			}
+
+				/*if (currentNode.placeAttacked[i][j]) {
+					currentNode.value++;
+				}
+				if (currentNode.placeAttackedByEnemy[i][j]) {
+					currentNode.value--;
+				}*/
+		/*	}
+		}
+
+		for (auto& action : currentNode.king->possibleActions) {
+			currentNode.value += 50;
+		}
+		for (auto& action : currentNode.enemyKing->possibleActions) {
+			currentNode.value -= 50;
 		}
 
 		if (currentNode.enemyKing->isAttacked) {
-			currentNode.value += 3;
+			currentNode.value += 3 * KINGVALUE;
 			for (auto& action : currentNode.enemyKing->possibleActions) {
 				if (action != nullptr) {
 					break;
@@ -269,7 +396,7 @@ void NodeTree::Init(Node& currentNode, int depth, bool isComputer) {
 			}
 		}
 		else if (currentNode.king->isAttacked) {
-			currentNode.value -= 3;
+			currentNode.value -= 3 * KINGVALUE;
 			for (auto& action : currentNode.king->possibleActions) {
 				if (action != nullptr) {
 					break;
@@ -278,12 +405,12 @@ void NodeTree::Init(Node& currentNode, int depth, bool isComputer) {
 					currentNode.value -= 10'000'000;
 				}
 			}
-		}
+		}*/
 	}
 }
 
 void NodeTree::Print(Node currentNode) {
-	if (currentNode.hasChildren) {
+	/*if (currentNode.hasChildren) {
 		std::cout << "Value of the current Node : " << currentNode.value << "\nChilds :\n";
 		for (Node& child : currentNode.children) {
 			Print(child);
@@ -291,12 +418,12 @@ void NodeTree::Print(Node currentNode) {
 	}
 	else {
 		std::cout << "Value of the Node : " << currentNode.value << "\n";
-	}
+	}*/
 }
 
 void NodeTree::ClearTree(Node& currentNode) {
 	iterations = 0;
-	if (currentNode.hasChildren) {
+	if (!currentNode.finishingNode) {
 		for (Node& child : currentNode.children) {
 			ClearTree(child);
 		}
@@ -317,6 +444,7 @@ void NodeTree::ClearTree(Node& currentNode) {
 		currentNode.enemyKing.reset();
 		currentNode.pieceToMove.reset();
 		currentNode.action.reset();
+		currentNode.value = 0;
 
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
@@ -327,14 +455,18 @@ void NodeTree::ClearTree(Node& currentNode) {
 	}
 }
 
-int NodeTree::MinMax(Node& currentNode, int depth, /*int alpha, int beta, */bool maximizingPlayer) {
-	if (depth == 0)
+float NodeTree::MinMax(Node& currentNode, int depth, /*int alpha, int beta, */bool maximizingPlayer) {
+	if (depth == 0 || currentNode.finishingNode)
 		return currentNode.value;
 	if (maximizingPlayer) {
 		currentNode.value = -HIGHNUMBER;
 		for (Node& node : currentNode.children) {
-			int eval = MinMax(node, depth - 1,/* alpha, beta, */false);
+			float eval = MinMax(node, depth - 1,/* alpha, beta, */false);
 			currentNode.value = std::max(currentNode.value, eval);
+			std::cout << "Computer eval : ";
+			std::cout << currentNode.value << "\n";
+			/*std::cout << "ID : " << node.pieceToMove->ID << " Base coordonates : " << node.pieceToMove->coordonates[0] << " " << node.pieceToMove->coordonates[1] << "\n";
+			std::cout << "New coordonates : " << node.action->coordonates[0] << " " << node.action->coordonates[1] << "\n";
 			/*alpha = std::max(alpha, eval);
 			if (beta <= alpha)
 				break;*/
@@ -344,8 +476,12 @@ int NodeTree::MinMax(Node& currentNode, int depth, /*int alpha, int beta, */bool
 	else {
 		currentNode.value = HIGHNUMBER;
 		for (Node& node : currentNode.children) {
-			int eval = MinMax(node, depth - 1,/* alpha, beta, */true);
+			float eval = MinMax(node, depth - 1,/* alpha, beta, */true);
 			currentNode.value = std::min(currentNode.value, eval);
+			std::cout << "Player eval :";
+			std::cout << currentNode.value << "\n";
+			/*std::cout << "ID : " << node.pieceToMove->ID << " Base coordonates : " << node.pieceToMove->coordonates[0] << " " << node.pieceToMove->coordonates[1] << "\n";
+			std::cout << "New coordonates : " << node.action->coordonates[0] << " " << node.action->coordonates[1] << "\n";
 			/*beta = std::min(beta, eval);
 			if (beta <= alpha)
 				break;*/
@@ -415,4 +551,14 @@ bool NodeTree::WillKingBeEndangered(Node currentNode, std::shared_ptr<Pieces> cu
 	predictionPieces.clear();
 	predictionEnemyPieces.clear();
 	return false;
+}
+
+int NodeTree::GetKingMoves(std::shared_ptr<Pieces> king) {
+	int numberOfKingMoves = 0;
+	for (auto& action : king->possibleActions) {
+		if(action != nullptr){
+			numberOfKingMoves++;
+		}
+	}
+	return numberOfKingMoves;
 }

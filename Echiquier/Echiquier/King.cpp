@@ -2,11 +2,45 @@
 
 King::King(std::shared_ptr<WindowManager>window, int x, int y, std::shared_ptr<Pieces>& rook1, std::shared_ptr<Pieces>& rook2) {
 	this->window = window;
-	value = KINGVALUE;
-	if (y == 7)
+	ID = 5;
+	if (y == 7) {
 		src = { 3, 2, 128, 128 };
-	else
+		int pieceSquareValue[8][8] =
+		{ {-30,-40,-40,-50,-50,-40,-40,-30},
+		  {-30,-40,-40,-50,-50,-40,-40,30},
+		  {-30,-40,-40,-50,-50,-40,-40,-30},
+		  {-30,-40,-40,-50,-50,-40,-40,-30},
+		  {-20,-30,-30,-40,-40,-30,-30,-20},
+		  {-10,-20,-20,-20,-20,-20,-20,-10},
+		  {20,20,0,0,0,0,20,20},
+		  {20,30,10,0,0,10,30,20} };
+		for (int i = 0; i < 8; i++) {
+			std::vector<int> line;
+			for (int j = 0; j < 8; j++) {
+				line.push_back(pieceSquareValue[i][j]);
+			}
+			pieceSquareTable.push_back(line);
+		}
+	}
+	else {
 		src = { 3, 138, 128, 128 };
+		int pieceSquareValue[8][8] =
+		{ {20,30,10,0,0,10,30,20},
+		  {20,20,0,0,0,0,20,20},
+		  {-10,-20,-20,-20,-20,-20,-20,-10},
+		  {-20,-30,-20,-40,-40,-30,-30,-20},
+		  {-30,-40,-40,-50,-50,-40,-40,-30},
+		  {-30,-40,-40,-50,-50,-40,-40,-30},
+		  {-30,-40,-40,-50,-50,-40,-40,-30},
+		  {-30,-40,-40,-50,-50,-40,-40,-30} };
+		for (int i = 0; i < 8; i++) {
+			std::vector<int> line;
+			for (int j = 0; j < 8; j++) {
+				line.push_back(pieceSquareValue[i][j]);
+			}
+			pieceSquareTable.push_back(line);
+		}
+	}
 	coordonates[0] = x, coordonates[1] = y;
 	this->rook1 = *&rook1;
 	this->rook2 = *&rook2;
@@ -31,6 +65,7 @@ King::~King() {}
 void King::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAttackedByEnemy[8][8], std::vector<std::vector<std::shared_ptr<Pieces>>>& allyPieces, std::vector<std::vector<std::shared_ptr<Pieces>>>& enemyPieces) {
 	possibleActions.clear();
 	this->allyPieces = *&allyPieces;
+	value = KINGVALUE + pieceSquareTable[coordonates[0]][coordonates[1]];
 	/*for (auto& piece : piecesManager.enemy->pieces) {
 		if (isAttacked)
 			break;
@@ -81,17 +116,17 @@ void King::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAtt
 				possibleActions.push_back(action);
 				if (enemyPlaceTaken[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]) {
 					enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->isAttacked = true;
-					enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->attackingValue -= value / 3;
-					this->attackingValue += enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->value / 3;
+					enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->attackingValue += enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->value / 2;
+					this->attackingValue -= enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->value / 3;
 					if (enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->isDefended)
-						possibleActions.pop_back();
+						possibleActions.pop_back(), enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->attackingValue -= enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->value / 2, this->attackingValue += enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->value / 3;
 				}
 			}
 			else
 				allyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->isDefended = true, allyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->defendingValue += value / 30;
 		}
 	}
-	if (!placeAttackedByEnemy[4][coordonates[1]]) {
+	if (!isAttacked) {
 		if (!rook1->hasMoved && !hasMoved && !placeTaken[1][coordonates[1]] && !placeTaken[2][coordonates[1]] && !placeTaken[3][coordonates[1]] &&
 			!enemyPlaceTaken[1][coordonates[1]] && !enemyPlaceTaken[2][coordonates[1]] && !enemyPlaceTaken[3][coordonates[1]] &&
 			!placeAttackedByEnemy[0][coordonates[1]] && !placeAttackedByEnemy[1][coordonates[1]] && !placeAttackedByEnemy[2][coordonates[1]] && !placeAttackedByEnemy[3][coordonates[1]]) {
@@ -104,6 +139,9 @@ void King::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAtt
 			std::shared_ptr<PossiblePlacements> action(new PossiblePlacements(6, coordonates[1]));
 			possibleActions.push_back(action);
 		}
+	}
+	else {
+		value /= 2;
 	}
 
 	//value = ((!rook1->hasMoved || !rook2->hasMoved) && !hasMoved) * 500;

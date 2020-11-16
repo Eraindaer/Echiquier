@@ -36,10 +36,14 @@ void Computer::Prediction(int depth) {
 }
 
 void Computer::Move(int depth) {
-	predictionTree->MinMax(predictionNode, depth, /*-HIGHNUMBER, HIGHNUMBER,*/ true);
+	float value = predictionTree->MinMax(predictionNode, depth, /*-HIGHNUMBER, HIGHNUMBER,*/ true);
+	std::cout << "Maximum : " << value << "\n";
 	for (Node& node : predictionNode.children) {
-		if (node.value == predictionNode.value) {
+		if (node.value == value) {
 			pieceToMove = node.pieceToMove, action = node.action;
+			std::cout << "ID : " << pieceToMove->ID << " Base coordonates : "<< pieceToMove->coordonates[0] << " " <<pieceToMove->coordonates[1] << "\n";
+			std::cout << "New coordonates : " << action->coordonates[0] << " " << action->coordonates[1] << "\n";
+			break;
 		}
 	}
 	pieces->Move(pieceToMove, action);

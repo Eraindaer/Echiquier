@@ -3,12 +3,12 @@
 #include "PossiblePlacements.h"
 #include "Vector2D.h"
 #include <vector>
-#define PAWNVALUE 3
-#define ROOKVALUE 9
-#define KNIGHTVALUE 6
-#define BISHOPVALUE 6 
-#define QUEENVALUE 15
-#define KINGVALUE 50
+#define PAWNVALUE 100
+#define ROOKVALUE 320
+#define KNIGHTVALUE 330
+#define BISHOPVALUE 500
+#define QUEENVALUE 900
+#define KINGVALUE 20000
 class Pieces
 {
 public:
@@ -35,9 +35,11 @@ public:
 	bool checkMate;
 	std::shared_ptr<Pieces> rookCastling;
 	int value;
+	int ID;
 	
 	int attackingValue, defendingValue;
 	std::vector<std::shared_ptr<PossiblePlacements>> possibleActions;
+	std::vector<std::vector<int>> pieceSquareTable;
 	
 	std::shared_ptr<Pieces> king;
 };

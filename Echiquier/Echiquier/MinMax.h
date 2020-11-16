@@ -8,11 +8,17 @@ class Node {
 public :
 	Node();
 	~Node();
+
+	bool CheckMate(std::shared_ptr<Pieces> king);
+	bool CheckEnemyMate(std::shared_ptr<Pieces> enemyKing);
+
 public:
 
-	int												     value;
-	int                                                  placeValue[8][8];
-	bool												 hasChildren;
+	float												 value;
+	int                                                  previousPosition[2];
+	int                                                  enemyPreviousPosition[2];
+	int                                                  placeValue[8][8];                      
+	bool												 finishingNode;
 	bool                                                 placeTaken[8][8];
 	bool                                                 enemyPlaceTaken[8][8];
 	bool                                                 placeAttacked[8][8];
@@ -36,8 +42,9 @@ public:
 	void Print(Node currentNode);
 	void ClearTree(Node& currentNode);
 
-	int  MinMax(Node& currentNode, int depth,/* int alpha, int beta,*/ bool maximizingPlayer);
+	float  MinMax(Node& currentNode, int depth,/* int alpha, int beta,*/ bool maximizingPlayer);
 	bool WillKingBeEndangered(Node currentNode, std::shared_ptr<Pieces> currentPiece, std::shared_ptr<PossiblePlacements> eventualAction, bool side);
+	int  GetKingMoves(std::shared_ptr<Pieces> king);
 
 private:	
 	int													 iterations;
