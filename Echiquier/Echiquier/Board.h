@@ -21,10 +21,10 @@ private:
 	std::shared_ptr<WindowManager> window;
 
 public:
-	 Player* player;
+	Player* player;
 	//Computer* player;
-	 Player* cpu;
-	//Computer* cpu;
+	//Player* cpu;
+	Computer* cpu;
 	std::vector<std::shared_ptr<Pieces>> piecesMoved;
 	std::vector<std::shared_ptr<PossiblePlacements>> actionsDone;
 };

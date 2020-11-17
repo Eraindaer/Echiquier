@@ -2,7 +2,9 @@
 
 Player::Player(std::shared_ptr<WindowManager> window, int player) {
 	pieces = new PiecesManager(window, player);
-	actionSelected = false;
+	for (int i = 0; i < 8; i++)
+		for (int j = 0; j < 8; j++)
+			actionBoard[i][j] = false;
 	pieceSelected = nullptr;
 }
 
@@ -18,42 +20,46 @@ void Player::Init() {
 }
 
  void Player::SelectPiece(InputManager* inputManager) {
-	 if (!actionSelected && inputManager->GetMouseClick()) {
-		 for (auto& piece : pieces->piecesList) {
-			 if (inputManager->GetMouseXPos() == piece->coordonates[0] &&
-				 inputManager->GetMouseYPos() == piece->coordonates[1]) {
-				 piece->selection = true;
-				 for (auto& action : piece->possibleActions) {
-					 pieces->actionList.push_back(action);
-				 }
-			 }
-			 else {
-				 piece->selection = false;
-				 pieces->actionList.clear();
-			 }
-		 }
-	 }
+	if (inputManager->GetMouseClick()) {
+		if (pieceSelected != nullptr && actionBoard[inputManager->GetMouseXPos()][inputManager->GetMouseYPos()]) {
+			for (auto& action : pieceSelected->possibleActions) {
+				if (action != nullptr && inputManager->GetMouseXPos() == action->coordonates[0] && inputManager->GetMouseYPos() == action->coordonates[1]) {
+					actionSelected = *&action;
+					break;
+				}
+			}
+		}
+		else if (!actionBoard[inputManager->GetMouseXPos()][inputManager->GetMouseYPos()]) {
+			pieces->actionList.clear();
+			if (pieceSelected != nullptr)
+				pieceSelected->selection = false;
+			pieceSelected = *&pieces->pieces[inputManager->GetMouseXPos()][inputManager->GetMouseYPos()];
+			for (int i = 0; i < 8; i++)
+				for (int j = 0; j < 8; j++)
+					actionBoard[i][j] = false;
+			if (pieceSelected != nullptr)
+				for (auto& action : pieceSelected->possibleActions) {
+					pieces->actionList.push_back(action);
+					if (action != nullptr)
+						actionBoard[action->coordonates[0]][action->coordonates[1]] = true;
+				}
+		}
+	}
+	
+	if (pieceSelected != nullptr)
+		pieceSelected->selection = true;
+
  }
 
  void Player::Move(InputManager* inputManager, std::vector<std::shared_ptr<Pieces>>& piecesMoved, std::vector<std::shared_ptr<PossiblePlacements>>& actionsDone) {
-	 for (auto& piece : pieces->piecesList) {
-		 if (piece->selection) {
-			 for (auto& action : piece->possibleActions) {
-				 if (action != nullptr) {
-					 if (inputManager->GetMouseXPos() == action->coordonates[0] &&
-						 inputManager->GetMouseYPos() == action->coordonates[1]) {
-						 actionSelected = true;
-						 if (inputManager->GetMouseClick()) {
-							 pieces->Move(piece, action);
-							 piece->selection = false;
-							 actionSelected = false;
-							 piece->Move(pieces->placeTaken, pieces->enemy->placeTaken, pieces->enemy->placeAttacked, pieces->pieces, pieces->enemy->pieces);
-							 break;
-						 }
-					 }
-				 }
-			 }
-		 }
+	 if (pieceSelected != nullptr && actionSelected != nullptr) {
+		 pieces->Move(pieceSelected, actionSelected);
+		 pieceSelected->selection = false;
+		 for (int i = 0; i < 8; i++)
+			 for (int j = 0; j < 8; j++)
+				 actionBoard[i][j] = false;
+		 pieceSelected->Move(pieces->placeTaken, pieces->enemy->placeTaken, pieces->enemy->placeAttacked, pieces->pieces, pieces->enemy->pieces);
+		 pieceSelected = nullptr, actionSelected = nullptr;
 	 }
  }
 

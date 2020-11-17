@@ -5,12 +5,12 @@
 #define HIGHNUMBER 1000000000
 
 class Node {
-public :
+public:
 	Node();
 	~Node();
 
-	bool CheckMate(std::shared_ptr<Pieces> king);
-	bool CheckEnemyMate(std::shared_ptr<Pieces> enemyKing);
+	bool CheckMate(bool side);
+	bool WillThisPieceBeEndangered(std::shared_ptr<Pieces> pieceToMove);
 
 public:
 

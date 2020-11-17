@@ -65,7 +65,7 @@ King::~King() {}
 void King::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAttackedByEnemy[8][8], std::vector<std::vector<std::shared_ptr<Pieces>>>& allyPieces, std::vector<std::vector<std::shared_ptr<Pieces>>>& enemyPieces) {
 	possibleActions.clear();
 	this->allyPieces = *&allyPieces;
-	value = KINGVALUE + pieceSquareTable[coordonates[0]][coordonates[1]];
+	value = KINGVALUE;
 	/*for (auto& piece : piecesManager.enemy->pieces) {
 		if (isAttacked)
 			break;
@@ -114,13 +114,13 @@ void King::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAtt
 			if (!placeTaken[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]) {
 				std::shared_ptr<PossiblePlacements> action(new PossiblePlacements(coordonates[0] + dir[j].x, coordonates[1] + dir[j].y));
 				possibleActions.push_back(action);
-				if (enemyPlaceTaken[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]) {
+				if (enemyPlaceTaken[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]) 
 					enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->isAttacked = true;
-					enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->attackingValue += enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->value / 2;
+					/*enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->attackingValue += enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->value / 2;
 					this->attackingValue -= enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->value / 3;
-					if (enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->isDefended)
-						possibleActions.pop_back(), enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->attackingValue -= enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->value / 2, this->attackingValue += enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->value / 3;
-				}
+					/*if (enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->isDefended)
+						possibleActions.pop_back(), enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->attackingValue -= enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->value / 2, this->attackingValue += enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->value / 3;*/
+				//}
 			}
 			else
 				allyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->isDefended = true, allyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->defendingValue += value / 30;
@@ -140,10 +140,6 @@ void King::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAtt
 			possibleActions.push_back(action);
 		}
 	}
-	else {
-		value /= 2;
-	}
-
 	//value = ((!rook1->hasMoved || !rook2->hasMoved) && !hasMoved) * 500;
 }
 
@@ -153,14 +149,14 @@ void King::SetCoordonates(int x, int y) {
 		hasMoved = true;
 		if (std::abs(x - coordonates[0]) <= 2) {
 			if (!rook1->hasMoved && std::abs(rook1->coordonates[0] - x) == 2) {
-				/*allyPieces[x + 1][rook1->coordonates[1]] = allyPieces[rook1->coordonates[0]][rook1->coordonates[1]];
-				allyPieces[rook1->coordonates[0]][rook1->coordonates[1]] = nullptr;*/
+				allyPieces[x + 1][rook1->coordonates[1]] = allyPieces[rook1->coordonates[0]][rook1->coordonates[1]];
+				allyPieces[rook1->coordonates[0]][rook1->coordonates[1]] = nullptr;
 				rook1->SetCoordonates(x + 1, rook1->coordonates[1]);
 				isCastling = true;
 			}
 			else if (!rook2->hasMoved && std::abs(rook2->coordonates[0] - x) == 1) {
-				/*allyPieces[x - 1][rook2->coordonates[1]] = allyPieces[rook2->coordonates[0]][rook2->coordonates[1]];
-				allyPieces[rook2->coordonates[0]][rook2->coordonates[1]] = nullptr;*/
+				allyPieces[x - 1][rook2->coordonates[1]] = allyPieces[rook2->coordonates[0]][rook2->coordonates[1]];
+				allyPieces[rook2->coordonates[0]][rook2->coordonates[1]] = nullptr;
 				rook2->SetCoordonates(x - 1, rook2->coordonates[1]);
 				isCastling = true;
 			}

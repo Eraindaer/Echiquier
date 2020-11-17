@@ -161,7 +161,7 @@ void Pawn::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAtt
 		}
 	}*/
     
-	value = PAWNVALUE + pieceSquareTable[coordonates[0]][coordonates[1]];
+	value = PAWNVALUE;
 
 	if (!hasMoved) {
 		for (int i = 1; i <= 2; i++) {

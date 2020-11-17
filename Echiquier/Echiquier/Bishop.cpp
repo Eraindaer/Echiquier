@@ -65,7 +65,7 @@ Bishop::~Bishop() {
 void Bishop::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAttackedByEnemy[8][8], std::vector<std::vector<std::shared_ptr<Pieces>>>& allyPieces, std::vector<std::vector<std::shared_ptr<Pieces>>>& enemyPieces) {
 	possibleActions.clear();
 	defendingValue = attackingValue = 0;
-	value = BISHOPVALUE + pieceSquareTable[coordonates[0]][coordonates[1]];
+	value = BISHOPVALUE;
 	/*for (auto& piece : piecesManager.enemy->pieces) {
 		if (isAttacked)
 			break;

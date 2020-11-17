@@ -21,5 +21,6 @@ public:
 public:
 	PiecesManager* pieces;
 	std::shared_ptr<Pieces> pieceSelected;
-	bool actionSelected;
+	std::shared_ptr<PossiblePlacements> actionSelected;
+	bool actionBoard[8][8];
 };
