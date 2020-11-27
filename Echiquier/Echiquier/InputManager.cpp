@@ -15,6 +15,11 @@ bool InputManager::GetMouseClick() {
 	return false;
 }
 
+bool InputManager::GetButtonPressed(bool f(SDL_KeyCode, std::shared_ptr<WindowManager>), SDL_KeyCode button) {
+	SDL_Delay(10);
+	return f(button, window);
+}
+
 int InputManager::GetMouseXPos() {
 	return window->GetEvent().button.x / (window->GetWindowWidth() / 8);
 }

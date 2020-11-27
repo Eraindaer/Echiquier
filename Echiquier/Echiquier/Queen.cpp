@@ -192,6 +192,7 @@ void Queen::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAt
 
 				if (!placeTaken[coordonates[0] + v.x][coordonates[1] + v.y]) {
 					std::shared_ptr<PossiblePlacements> action(new PossiblePlacements(coordonates[0] + v.x, coordonates[1] + v.y));
+					action->isDeleted = false;
 					possibleActions.push_back(action);
 					if (enemyPlaceTaken[coordonates[0] + v.x][coordonates[1] + v.y]) {
 						enemyPieces[coordonates[0] + v.x][coordonates[1] + v.y]->isAttacked = true;

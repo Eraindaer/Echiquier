@@ -61,6 +61,10 @@ void Player::Init() {
 		 pieceSelected->Move(pieces->placeTaken, pieces->enemy->placeTaken, pieces->enemy->placeAttacked, pieces->pieces, pieces->enemy->pieces);
 		 pieceSelected = nullptr, actionSelected = nullptr;
 	 }
+	 if (pieces->enemy->CheckMate()) {
+		 pieces->turn = false;
+		 pieces->enemy->turn = false;
+	 }
  }
 
 void Player::Update() {

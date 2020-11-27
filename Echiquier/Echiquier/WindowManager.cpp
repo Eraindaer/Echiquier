@@ -12,7 +12,7 @@ WindowManager::WindowManager(const char* title, int xPos, int yPos, int width, i
 		SDL_SetRenderDrawColor(windowRenderer, color.r, color.g, color.b, color.a);
 		isRunning = true;
 	}
- 
+	textureManager->InitFont("assets/arcadeClassic.TTF", font);
 }
 WindowManager::~WindowManager() {
 	SDL_DestroyWindow(window);

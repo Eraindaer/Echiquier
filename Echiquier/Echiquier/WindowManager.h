@@ -14,6 +14,7 @@ public:
 	inline SDL_Event					   GetEvent() { return event; }
 	inline SDL_Window*					   GetWindow() { return window; }
 	inline SDL_Renderer*				   GetRenderer() { return windowRenderer; }
+	inline TTF_Font*					   GetFont() { return font; }
 	inline std::shared_ptr<TextureManager> GetTextureManager() { return textureManager; }
 	inline int                             GetWindowWidth() { return width; }
 	inline int                             GetWindowHeight() { return height; }
@@ -25,5 +26,6 @@ private:
 	SDL_Event							   event;
 	SDL_Window*							   window;
 	SDL_Renderer*						   windowRenderer;
+	TTF_Font*							   font;
 	std::shared_ptr<TextureManager>		   textureManager;
 };

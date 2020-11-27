@@ -13,6 +13,7 @@ public:
 	~PiecesManager();
 
 	void Move(std::shared_ptr<Pieces> pieceToMove, std::shared_ptr<PossiblePlacements> newPosition);
+	void Promotion(int ID);
 	void Draw();
 	bool WillKingBeEndangered(std::shared_ptr<Pieces> currentPiece, std::shared_ptr<PossiblePlacements> eventualAction);
 	void CheckAttackedPlace();
@@ -24,11 +25,12 @@ public:
 	SDL_Texture* tex;
 	SDL_Texture* dotTex;
 	std::vector<std::shared_ptr<Pieces>> rooks;
+	std::vector<std::shared_ptr<Pieces>> pawns;
 	PiecesManager* enemy;
 	std::shared_ptr<WindowManager> window;
 	bool turn;
 	int side;
-	int direction;	
+	int direction;
 	std::vector<std::shared_ptr<PossiblePlacements>> actionList;
 	std::vector<std::shared_ptr<Pieces>> piecesList;
 	std::vector<std::shared_ptr<Pieces>> predictionEnemyPiecesList;

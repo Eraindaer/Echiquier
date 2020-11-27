@@ -113,6 +113,7 @@ void King::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAtt
 
 			if (!placeTaken[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]) {
 				std::shared_ptr<PossiblePlacements> action(new PossiblePlacements(coordonates[0] + dir[j].x, coordonates[1] + dir[j].y));
+				action->isDeleted = false;
 				possibleActions.push_back(action);
 				if (enemyPlaceTaken[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]) 
 					enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->isAttacked = true;
@@ -131,12 +132,14 @@ void King::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAtt
 			!enemyPlaceTaken[1][coordonates[1]] && !enemyPlaceTaken[2][coordonates[1]] && !enemyPlaceTaken[3][coordonates[1]] &&
 			!placeAttackedByEnemy[0][coordonates[1]] && !placeAttackedByEnemy[1][coordonates[1]] && !placeAttackedByEnemy[2][coordonates[1]] && !placeAttackedByEnemy[3][coordonates[1]]) {
 			std::shared_ptr<PossiblePlacements> action(new PossiblePlacements(2, coordonates[1]));
+			action->isDeleted = false;
 			possibleActions.push_back(action);
 		}
 		if (!rook2->hasMoved && !hasMoved && !placeTaken[5][coordonates[1]] && !placeTaken[6][coordonates[1]] &&
 			!enemyPlaceTaken[5][coordonates[1]] && !enemyPlaceTaken[6][coordonates[1]] &&
 			!placeAttackedByEnemy[5][coordonates[1]] && !placeAttackedByEnemy[6][coordonates[1]] && !placeAttackedByEnemy[7][coordonates[1]]) {
 			std::shared_ptr<PossiblePlacements> action(new PossiblePlacements(6, coordonates[1]));
+			action->isDeleted = false;
 			possibleActions.push_back(action);
 		}
 	}

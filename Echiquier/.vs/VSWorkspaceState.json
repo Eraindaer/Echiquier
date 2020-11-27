@@ -1,6 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\Echiquier",
+    "\\Echiquier\\assets"
   ],
+  "SelectedNode": "\\Echiquier\\Board.cpp",
   "PreviewInSolutionExplorer": false
 }

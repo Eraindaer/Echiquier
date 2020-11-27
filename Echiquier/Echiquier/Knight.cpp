@@ -97,6 +97,7 @@ void Knight::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeA
 
 				if (!placeTaken[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]) {
 					std::shared_ptr<PossiblePlacements> action(new PossiblePlacements(coordonates[0] + dir[j].x, coordonates[1] + dir[j].y));
+					action->isDeleted = false;
 					possibleActions.push_back(action);
 					if (enemyPlaceTaken[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]) {
 						enemyPieces[coordonates[0] + dir[j].x][coordonates[1] + dir[j].y]->isAttacked = true;

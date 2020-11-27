@@ -4,6 +4,7 @@
 Computer::Computer(std::shared_ptr<WindowManager> window, int player) {
 	pieces = new PiecesManager(window, player);
 	predictionTree = new NodeTree();
+	
 }
 
 Computer::~Computer() {
@@ -26,6 +27,12 @@ void Computer::Prediction(int depth) {
 	predictionNode.enemyPieces.clear();
 	predictionNode.pieces = *&pieces->pieces;
 	predictionNode.enemyPieces = *&pieces->enemy->pieces;
+	predictionNode.pawns = *&pieces->pawns;
+	predictionNode.enemyPawns = *&pieces->enemy->pawns;
+	predictionNode.rooks = *&pieces->rooks;
+	predictionNode.enemyRooks = *&pieces->enemy->rooks;
+	predictionNode.window = *&pieces->window;
+
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			predictionNode.placeTaken[i][j] = pieces->placeTaken[i][j];
@@ -48,6 +55,10 @@ void Computer::Move(int depth) {
 	}
 	pieces->Move(pieceToMove, action);
 	pieceToMove->Move(pieces->placeTaken, pieces->enemy->placeTaken, pieces->enemy->placeAttacked, pieces->pieces, pieces->enemy->pieces);
+	if (pieces->enemy->CheckMate()) {
+		pieces->turn = false;
+		pieces->enemy->turn = false;
+	}
 }
 
 void Computer::Update() {

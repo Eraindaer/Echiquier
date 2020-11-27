@@ -21,15 +21,16 @@ PiecesManager::PiecesManager(std::shared_ptr<WindowManager> window, int player) 
 		this->window->GetTextureManager()->InitTexture("assets/dot.png", this->window->GetRenderer(), dotTex);
 	else
 		this->window->GetTextureManager()->InitTexture("assets/black_dot.png", this->window->GetRenderer(), dotTex);
-	
-	for (int i = 0; i < 8; i++) {			
+
+	for (int i = 0; i < 8; i++) {
 		std::vector<std::shared_ptr<Pieces>> line;
 		for (int j = 0; j < 8; j++) {
 			if (j == side + direction) {
 				std::shared_ptr<Pieces> piece(new Pawn(this->window, i, j));
-				piecesList.push_back(piece);
-				line.push_back(piece);
+				piecesList.push_back(*&piece);
+				line.push_back(*&piece);
 				placeTaken[i][j] = true;
+				pawns.push_back(*&piece);
 			}
 			else if (j == side) {
 				if (i == 0 || i == 7) {
@@ -129,8 +130,28 @@ void PiecesManager::Move(std::shared_ptr<Pieces> pieceToMove, std::shared_ptr<Po
 		placeTaken[pieceToMove->coordonates[0] + tile][pieceToMove->coordonates[1]] = true;
 		pieceToMove->isCastling = false;
 	}
+	int iterator = 0;
+	for (auto& pawn : pawns) {
+		if (pawn->coordonates[1] == 7 - side) {
+			int coordonates[2] = { pawn->coordonates[0], pawn->coordonates[1] };
+			pawn.reset(new Queen(window, coordonates[0], side));
+			pawn->SetCoordonates(coordonates[0], coordonates[1]);
+			pawn->SetKing(king);
+			pieces[pawn->coordonates[0]][pawn->coordonates[1]] = pawn;
+			pawns.erase(pawns.begin() + iterator);
+			break;
+		}
+		iterator++;
+	}
+	piecesList.clear();
+	for (int i = 0; i < 8; i++)
+		for (int j = 0; j < 8; j++)
+			if (pieces[i][j] != nullptr)
+				piecesList.push_back(pieces[i][j]);
+
 	turn = false, enemy->turn = true;
 	pieceToMove->possibleActions.clear();
+
 
 	/*if (enemy->CheckMate() || CheckMate()) {
 		turn = enemy->turn = false;
@@ -240,7 +261,7 @@ bool PiecesManager::CheckMate() {
 		}
 	}
 
-	if (actionPossible == 0 && king->isAttacked)
+	if (actionPossible == 0)
 		return true;
 
 	return false;

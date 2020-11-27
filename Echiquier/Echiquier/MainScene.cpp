@@ -19,9 +19,12 @@ void MainScene::Events() {
 }
 
 void MainScene::Update() {
-	//window->SetRunState(!chessBoard->CheckMate());
 	chessBoard->Update(inputManager);	
-	
+	if (chessBoard->Restart()) {
+		chessBoard = nullptr;
+		delete(chessBoard);
+		chessBoard = new Board(window);
+	}
 }
 
 void MainScene::Draw() {

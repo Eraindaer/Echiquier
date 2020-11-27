@@ -170,6 +170,7 @@ void Pawn::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAtt
 				if (enemyPlaceTaken[coordonates[0]][coordonates[1] + v.y])
 					break;
 				std::shared_ptr<PossiblePlacements> action(new PossiblePlacements(coordonates[0], coordonates[1] + v.y));
+				action->isDeleted = false;
 				possibleActions.push_back(action);
 
 			}
@@ -180,6 +181,7 @@ void Pawn::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAtt
 	else {
 		if (coordonates[1] + dir.y < 8 && coordonates[1] + dir.y >= 0 && !placeTaken[coordonates[0]][coordonates[1] + dir.y] && !enemyPlaceTaken[coordonates[0]][coordonates[1] + dir.y]) {
 			std::shared_ptr<PossiblePlacements> action(new PossiblePlacements(coordonates[0], coordonates[1] + dir.y));
+			action->isDeleted = false;
 			possibleActions.push_back(action);
 		}
 	}
@@ -187,6 +189,7 @@ void Pawn::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAtt
 	if (coordonates[0] + attackDir1.x < 8 && coordonates[0] + attackDir1.x >= 0 && coordonates[1] + attackDir1.y < 8 && coordonates[1] + attackDir1.y >= 0) {
 		if (enemyPlaceTaken[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]) {
 			std::shared_ptr<PossiblePlacements> action(new PossiblePlacements(coordonates[0] + attackDir1.x, coordonates[1] + attackDir1.y));
+			action->isDeleted = false;
 			possibleActions.push_back(action);
 			enemyPieces[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]->isAttacked = true, enemyPieces[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]->attackingValue += enemyPieces[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]->value/2,
 			this->attackingValue -= enemyPieces[coordonates[0] + attackDir1.x][coordonates[1] + attackDir1.y]->value / 3;
@@ -200,6 +203,7 @@ void Pawn::Move(bool placeTaken[8][8], bool enemyPlaceTaken[8][8], bool placeAtt
 	if (coordonates[0] + attackDir2.x < 8 && coordonates[0] + attackDir2.x >= 0 && coordonates[1] + attackDir2.y < 8 && coordonates[1] + attackDir2.y >= 0) {
 		if (enemyPlaceTaken[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]) {
 			std::shared_ptr<PossiblePlacements> action(new PossiblePlacements(coordonates[0] + attackDir2.x, coordonates[1] + attackDir2.y));
+			action->isDeleted = false;
 			possibleActions.push_back(action);
 			enemyPieces[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]->isAttacked = true, enemyPieces[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]->attackingValue += enemyPieces[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]->value/2,
 			this->attackingValue -= enemyPieces[coordonates[0] + attackDir2.x][coordonates[1] + attackDir2.y]->value / 3;

@@ -8,6 +8,7 @@ public:
 	~InputManager();
 
 	bool GetMouseClick();
+	bool GetButtonPressed(bool f(SDL_KeyCode, std::shared_ptr<WindowManager>), SDL_KeyCode button);
 	int  GetMouseXPos(); 
 	int  GetMouseYPos();
 
