@@ -94,14 +94,14 @@ void NodeTree::Init(Node& currentNode, int depth, bool isComputer) {
 		}
 	}
 	
-	/*for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			if (currentNode.enemyPieces[i][j] != nullptr) {
 				int iterator = 0;
-				for (auto&& action : currentNode.enemyPieces[i][j]->possibleActions) {
+				for (auto& action : currentNode.enemyPieces[i][j]->possibleActions) {
 					if (action != nullptr)
 						if (WillKingBeEndangered(currentNode, currentNode.enemyPieces[i][j], action, 0)) {
-							action->SetState(true);
+							action.get()->SetState(true);
 							std::cout << "Action supprimée joueur " << action->coordonates[0] << " , " << action->coordonates[1] << "\n";
 							int test = 0;
 						}
@@ -110,11 +110,11 @@ void NodeTree::Init(Node& currentNode, int depth, bool isComputer) {
 			}
 			else if (currentNode.pieces[i][j] != nullptr) {
 				int iterator = 0;
-				for (auto&& action : currentNode.pieces[i][j]->possibleActions) {
+				for (auto& action : currentNode.pieces[i][j]->possibleActions) {
 					if (action != nullptr)
 						if (WillKingBeEndangered(currentNode, currentNode.pieces[i][j], action, 1)) {
-							action->SetState(true);
 							std::cout << "Action supprimée ordi " << action->coordonates[0] << " , " << action->coordonates[1] << "\n";
+							action.get()->SetState(true);
 							int test = 0;
 						}
 					iterator++;
@@ -127,21 +127,21 @@ void NodeTree::Init(Node& currentNode, int depth, bool isComputer) {
 		for (int j = 0; j < 8; j++) {
 			if (currentNode.enemyPieces[i][j] != nullptr) {
 				int iterator = 0;
-				for (auto&& action : currentNode.enemyPieces[i][j]->possibleActions) {
-					if (action->isDeleted)
-						std::cout << "Nullptrrrr  \n" << action->coordonates[0] << " , " << action->coordonates[1] << "\n";
+				for (auto& action : currentNode.enemyPieces[i][j]->possibleActions) {
+					if (action.get()->isDeleted)
+						std::cout << "Nullptrrrr  \n";
 					iterator++;
 				}
 			}
 			else if (currentNode.pieces[i][j] != nullptr) {
 				int iterator = 0;
-				for (auto&& action : currentNode.pieces[i][j]->possibleActions) {
-					if (action->isDeleted)
-						std::cout << "Nullptrrrrrr \n" << action->coordonates[0] << " , " << action->coordonates[1] << "\n";
+				for (auto& action : currentNode.pieces[i][j]->possibleActions) {
+					if (action.get()->isDeleted)
+						std::cout << "Nullptrrrrrr \n";
 					iterator++;
 				}
 			}
-		}*/
+		}
 
 	if (isCheckmated(currentNode, 0)) {
 		currentNode.finishingNode = true;
@@ -185,7 +185,7 @@ void NodeTree::Init(Node& currentNode, int depth, bool isComputer) {
 				for (int j = 0; j < 8; j++) {
 					if (currentNode.pieces[i][j] != nullptr) {
 						for (auto& action : currentNode.pieces[i][j]->possibleActions) {
-							if (action != nullptr && !WillKingBeEndangered(currentNode, currentNode.pieces[i][j], action, 1)) {
+							if (!action.get()->isDeleted) {
 								Node n;
 								n.pieces = currentNode.pieces;
 								n.enemyPieces = currentNode.enemyPieces;
@@ -257,7 +257,7 @@ void NodeTree::Init(Node& currentNode, int depth, bool isComputer) {
 				for (int j = 0; j < 8; j++) {
 					if (currentNode.enemyPieces[i][j] != nullptr) {
 						for (auto& action : currentNode.enemyPieces[i][j]->possibleActions) {
-							if (action != nullptr && !WillKingBeEndangered(currentNode, currentNode.enemyPieces[i][j], action, 0)) {
+							if (!action.get()->isDeleted) {
 									Node n;
 									n.pieces = currentNode.pieces;
 									n.enemyPieces = currentNode.enemyPieces;
@@ -391,7 +391,7 @@ void NodeTree::Init(Node& currentNode, int depth, bool isComputer) {
 						
 					}*/
 					for (auto& action : currentNode.pieces[i][j]->possibleActions) {
-							if (!WillKingBeEndangered(currentNode, currentNode.pieces[i][j], action, 1)) {
+							if (!action.get()->isDeleted) {
 								numberOfMoves[0]++;
 							}
 						}
@@ -408,19 +408,20 @@ void NodeTree::Init(Node& currentNode, int depth, bool isComputer) {
 						
 					}*/
 					for (auto& action : currentNode.enemyPieces[i][j]->possibleActions) {
-							if (!WillKingBeEndangered(currentNode, currentNode.enemyPieces[i][j], action, 0)) {
+							if (!action.get()->isDeleted) {
 								numberOfMoves[1]++;
+								
 							}
 						}
 				}
 			}
 		}
 		for (auto& action : currentNode.king->possibleActions) {
-			if (!WillKingBeEndangered(currentNode, currentNode.king, action, 1))
+			if (!action.get()->isDeleted)
 				numberOfKingMoves[0]++;
 		}
 		for (auto& action : currentNode.enemyKing->possibleActions) {
-			if (!WillKingBeEndangered(currentNode, currentNode.enemyKing, action, 0))
+			if (!action.get()->isDeleted)
 				numberOfKingMoves[1]++;
 		}
 
@@ -734,8 +735,8 @@ bool NodeTree::isCheckmated(Node currentNode, bool side) {
 			for (int i = 0; i < 8; i++) {
 				for (int j = 0; j < 8; j++) {
 					if (currentNode.pieces[i][j] != nullptr) {
-						for (auto action : currentNode.pieces[i][j]->possibleActions) {
-							if (!WillKingBeEndangered(currentNode, currentNode.pieces[i][j], action, side)){
+						for (auto& action : currentNode.pieces[i][j]->possibleActions) {
+							if (!action.get()->isDeleted){
 								iterator++;
 							}
 						}
@@ -747,8 +748,8 @@ bool NodeTree::isCheckmated(Node currentNode, bool side) {
 			for (int i = 0; i < 8; i++) {
 				for (int j = 0; j < 8; j++) {
 					if (currentNode.enemyPieces[i][j] != nullptr) {
-						for (auto action : currentNode.enemyPieces[i][j]->possibleActions) {
-							if (!WillKingBeEndangered(currentNode, currentNode.enemyPieces[i][j], action, side)) {
+						for (auto& action : currentNode.enemyPieces[i][j]->possibleActions) {
+							if (!action.get()->isDeleted) {
 								iterator++;
 							}
 						}
